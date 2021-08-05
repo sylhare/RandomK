@@ -12,16 +12,24 @@ inline fun <reified T> makeRandomInstance(): T {
     return makeRandomInstance(T::class) as T
 }
 
-class NoUsableConstructor: Error()
+class NoUsableConstructor : Error()
 
 fun makeRandomInstance(clazz: KClass<*>): Any {
-    val constructor = clazz.constructors
-        .minByOrNull { it.parameters.size } ?: throw NoUsableConstructor()
+    val constructors = clazz.constructors
+        .sortedBy { it.parameters.size }
 
-    val arguments = constructor.parameters
-        .map { it.type.classifier as KClass<*> }
-        .map { makeRandomInstance(it) }
-        .toTypedArray()
+    for (constructor in constructors) {
+        try {
+            val arguments = constructor.parameters
+                .map { it.type.classifier as KClass<*> }
+                .map { makeRandomInstance(it) }
+                .toTypedArray()
 
-    return constructor.call(*arguments)
+            return constructor.call(*arguments)
+        } catch (e: Throwable) {
+            // no-op. We catch any possible error here that might occur during class creation
+        }
+    }
+
+    throw NoUsableConstructor()
 }
