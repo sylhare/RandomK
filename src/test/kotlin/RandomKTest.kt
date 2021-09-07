@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.reflect.full.IllegalCallableAccessException
@@ -82,4 +83,21 @@ class RandomKTest {
     fun `Throws NoUsableConstructor for a sealed class`() {
         assertThrows<NoUsableConstructor> { makeRandomInstance<S>() }
     }
+
+    @Test
+    fun `Creates primitives`() {
+        assertTrue(makeRandomInstance<Int>() is Int)
+        assertTrue(makeRandomInstance<Long>() is Long)
+        assertTrue(makeRandomInstance<Double>() is Double)
+        assertTrue(makeRandomInstance<Float>() is Float)
+        assertTrue(makeRandomInstance<Char>() is Char)
+        assertTrue(makeRandomInstance<String>() is String)
+    }
+
+    @Disabled
+    @Test
+    fun `Creates primitives for Arrays`() {
+        assertTrue(makeRandomInstance<Array<Int>>() is Array<Int>)
+    }
+
 }
