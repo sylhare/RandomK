@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.5.0"
+    `maven-publish`
 }
 
 group = "org.example"
@@ -21,3 +22,22 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/sylhare/RandomK")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("GPR_API_KEY")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("RandomK") {
+            from(components["java"])
+        }
+    }
+}
+

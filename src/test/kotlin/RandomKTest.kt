@@ -3,7 +3,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import kotlin.reflect.full.IllegalCallableAccessException
 
 class RandomKTest {
 
@@ -18,6 +17,7 @@ class RandomKTest {
 
         constructor(a: A)
     }
+
     sealed class S
     class P {
         private constructor()
@@ -86,12 +86,12 @@ class RandomKTest {
 
     @Test
     fun `Creates primitives`() {
-        assertTrue(makeRandomInstance<Int>() is Int)
-        assertTrue(makeRandomInstance<Long>() is Long)
-        assertTrue(makeRandomInstance<Double>() is Double)
-        assertTrue(makeRandomInstance<Float>() is Float)
-        assertTrue(makeRandomInstance<Char>() is Char)
-        assertTrue(makeRandomInstance<String>() is String)
+        assertEquals(Int::class, makeRandomInstance<Int>()::class)
+        assertEquals(Long::class, makeRandomInstance<Long>()::class)
+        assertEquals(Double::class, makeRandomInstance<Double>()::class)
+        assertEquals(Float::class, makeRandomInstance<Float>()::class)
+        assertEquals(Char::class, makeRandomInstance<Char>()::class)
+        assertEquals(String::class, makeRandomInstance<String>()::class)
     }
 
     @Disabled
