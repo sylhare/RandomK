@@ -15,7 +15,7 @@ internal fun makePrimitiveOrNull(clazz: KClass<*>) = when(clazz) {
     else -> null
 }
 
-private fun makeRandomChar() = random.nextInt().toChar()
-private fun makeRandomString() = (1..random.nextInt(100))
+private fun makeRandomChar() = random.nextInt(23, 123).toChar()
+private fun makeRandomString() = (1..random.nextInt(50))
     .map { makeRandomChar() }
-    .joinToString(separator = "") { "$it" }
+    .joinToString(separator = "")
