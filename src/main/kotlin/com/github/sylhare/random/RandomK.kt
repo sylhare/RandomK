@@ -1,4 +1,5 @@
-import kotlin.random.Random
+package com.github.sylhare.random
+
 import kotlin.reflect.KClass
 
 inline fun <reified T> makeRandomInstanceNoArgs(): T {
@@ -13,18 +14,16 @@ inline fun <reified T> makeRandomInstance(): T {
     return makeRandomInstance(T::class) as T
 }
 
-class NoUsableConstructor : Error()
-
 fun makeRandomInstance(clazz: KClass<*>): Any {
     val primitive = makePrimitiveOrNull(clazz)
-    if(primitive != null) {
+    if (primitive != null) {
         return primitive
     }
 
     val constructors = clazz.constructors
         .sortedBy { it.parameters.size }
 
-    for (constructor in constructors) {
+    constructors.forEach { constructor ->
         try {
             val arguments = constructor.parameters
                 .map { it.type.classifier as KClass<*> }
@@ -39,20 +38,3 @@ fun makeRandomInstance(clazz: KClass<*>): Any {
 
     throw NoUsableConstructor()
 }
-
-val random = Random
-private fun makePrimitiveOrNull(clazz: KClass<*>) = when(clazz) {
-    Int::class -> random.nextInt()
-    Long::class -> random.nextLong()
-    Double::class -> random.nextDouble()
-    Float::class -> random.nextFloat()
-    Char::class -> makeRandomChar()
-    String::class -> makeRandomString()
-    Boolean::class -> random.nextBoolean()
-    else -> null
-}
-
-private fun makeRandomChar() = random.nextInt().toChar()
-private fun makeRandomString() = (1..random.nextInt(100))
-    .map { makeRandomChar() }
-    .joinToString(separator = "") { "$it" }

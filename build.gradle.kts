@@ -5,8 +5,8 @@ plugins {
     `maven-publish`
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "com.github.sylhare.random"
+version = "1.1-SNAPSHOT"
 
 repositories {
     mavenCentral()

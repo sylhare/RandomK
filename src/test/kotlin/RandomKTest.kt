@@ -1,3 +1,5 @@
+package com.github.sylhare.random
+
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Disabled
@@ -17,6 +19,9 @@ class RandomKTest {
 
         constructor(a: A)
     }
+
+    class F(val hello: String)
+    class G(val f1: F, val f2: F, val c: Char, val str: String, val l: Long)
 
     sealed class S
     class P {
@@ -94,10 +99,19 @@ class RandomKTest {
         assertEquals(String::class, makeRandomInstance<String>()::class)
     }
 
+    @Test
+    fun `Creates an instance using constructor with primitives and standard types`() {
+        val f: F = makeRandomInstance()
+        assertEquals(F::class, f::class)
+
+        val g: G = makeRandomInstance()
+        assertEquals(G::class, g::class)
+        assertTrue("\$G@" in g.toString(), "toString of G should contains \$G@ and it is $g")
+    }
+
     @Disabled
     @Test
     fun `Creates primitives for Arrays`() {
         assertTrue(makeRandomInstance<Array<Int>>() is Array<Int>)
     }
-
 }
