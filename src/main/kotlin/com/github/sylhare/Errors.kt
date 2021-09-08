@@ -1,4 +1,4 @@
-package com.github.sylhare.random
+package com.github.sylhare
 
 class NoUsableConstructor : Error()
 

@@ -1,5 +1,7 @@
-package com.github.sylhare.random
+package com.github.sylhare
 
+import com.github.sylhare.random.makeStandardInstanceOrNull
+import com.github.sylhare.random.random
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf

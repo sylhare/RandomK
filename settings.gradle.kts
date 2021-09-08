@@ -1,2 +1,2 @@
-rootProject.name = "randomK"
+rootProject.name = "randomk"
 

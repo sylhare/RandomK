@@ -1,5 +1,6 @@
 package com.github.sylhare.random
 
+import com.github.sylhare.makeRandomInstance
 import kotlin.random.Random
 import kotlin.reflect.KClass
 import kotlin.reflect.KType

@@ -1,4 +1,4 @@
-package com.github.sylhare.random
+package com.github.sylhare
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Disabled
