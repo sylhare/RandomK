@@ -22,7 +22,7 @@ fun makeRandomInstance(clazz: KClass<*>): Any {
 
     val constructors = clazz.constructors
         .sortedBy { it.parameters.size }
-    
+
     val usedConstructor = constructors.mapNotNull { constructor ->
         tryOf {
             val arguments = constructor.parameters

@@ -100,6 +100,21 @@ class RandomKTest {
     }
 
     @Test
+    fun `With multiple constructors, takes the first one`() {
+        val m: M = makeRandomInstance()
+        assertEquals(m::class.java, M::class.java)
+        assertEquals(m.number, 1)
+    }
+
+    @Test
+    fun `With lateinit and lazy variables`() {
+        val l: L = makeRandomInstance()
+        assertNotEquals(l.b, L("tada").b)
+        assertNotEquals(l.b.value, "hello")
+        assertEquals(l::class.java, L::class.java)
+    }
+
+    @Test
     fun `Throws NoUsableConstructor for private constructor`() {
         assertThrows<NoUsableConstructor> { makeRandomInstance<P>() }
     }
@@ -136,19 +151,9 @@ class RandomKTest {
     }
 
     @Test
-    fun `With multiple constructors, takes the first one`() {
-        val m: M = makeRandomInstance()
-        assertEquals(m::class.java, M::class.java)
-        assertEquals(m.number, 1)
     }
 
     @Test
-    fun `With lateinit and lazy variables`() {
-        val l: L = makeRandomInstance()
-        //assertEquals(l.a, L().a)
-        assertNotEquals(l.b, L("tada").b)
-        assertEquals(l::class.java, L::class.java)
-        println(l.b)
     }
 
 
