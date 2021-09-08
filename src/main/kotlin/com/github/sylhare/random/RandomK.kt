@@ -22,19 +22,20 @@ fun makeRandomInstance(clazz: KClass<*>): Any {
 
     val constructors = clazz.constructors
         .sortedBy { it.parameters.size }
-
-    constructors.forEach { constructor ->
-        try {
+    
+    val usedConstructor = constructors.mapNotNull { constructor ->
+        tryOf {
             val arguments = constructor.parameters
                 .map { it.type.classifier as KClass<*> }
                 .map { makeRandomInstance(it) }
                 .toTypedArray()
 
-            return constructor.call(*arguments)
-        } catch (e: Throwable) {
-            // no-op. We catch any possible error here that might occur during class creation
+            return@tryOf constructor.call(*arguments)
         }
     }
 
-    throw NoUsableConstructor()
+    when {
+        usedConstructor.isEmpty() -> throw NoUsableConstructor()
+        else -> return usedConstructor.first()
+    }
 }
