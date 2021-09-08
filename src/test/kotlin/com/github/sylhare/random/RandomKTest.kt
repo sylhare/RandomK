@@ -43,7 +43,7 @@ class RandomKTest {
         assertEquals(c::class.java, C::class.java)
         assertTrue("C@" in c.toString(), "toString of C should contains C@ and it is $c")
     }
-    
+
     @Test
     fun `Creates a single instance using constructor from data class`() {
         val d: D = makeRandomInstance()
