@@ -1,5 +1,21 @@
 package com.github.sylhare
 
+import com.github.sylhare.MockClasses.A
+import com.github.sylhare.MockClasses.B
+import com.github.sylhare.MockClasses.C
+import com.github.sylhare.MockClasses.D
+import com.github.sylhare.MockClasses.E
+import com.github.sylhare.MockClasses.F
+import com.github.sylhare.MockClasses.G
+import com.github.sylhare.MockClasses.GA
+import com.github.sylhare.MockClasses.GAA
+import com.github.sylhare.MockClasses.GT
+import com.github.sylhare.MockClasses.GTA
+import com.github.sylhare.MockClasses.L
+import com.github.sylhare.MockClasses.M
+import com.github.sylhare.MockClasses.P
+import com.github.sylhare.MockClasses.S
+
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -132,8 +148,8 @@ class RandomKTest {
 
     @Test
     fun `Creates sets`() {
-        assertEquals(setOf(F("3"), F("2"))::class, makeRandomInstance<Set<F>>()::class)
-        assertEquals(HashSet<A>(A().hashCode())::class, makeRandomInstance<HashSet<F>>()::class)
+        val set: Set<F> = setOf(F("3"), F("2"))
+        assertEquals(set::class, makeRandomInstance<Set<F>>()::class)
     }
 
     @Test
