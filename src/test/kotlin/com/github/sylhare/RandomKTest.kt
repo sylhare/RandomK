@@ -150,4 +150,56 @@ class RandomKTest {
         assertEquals(arrayOf("string")::class, makeRandomInstance<Array<String>>()::class)
         assertEquals(arrayOf(1)::class, makeRandomInstance<Array<Int>>()::class)
     }
+
+    @Test
+    fun `Generic classes are supported`() {
+        val ga1: GA<Int> = makeRandomInstance()
+        assertEquals(ga1.t::class, Int::class)
+
+        val ga2: GA<String> = makeRandomInstance()
+        assertEquals(ga2.t::class, String::class)
+    }
+
+    @Test
+    fun `Generic classes are supported default constructor`() {
+        val gt1 = makeRandomInstance<GT<Int>>()
+        gt1.t = 1
+        assertEquals(1, gt1.t)
+
+        val gt2 = makeRandomInstance<GT<Long>>()
+        gt2.t = 1L
+        assertEquals(1L, gt2.t)
+    }
+
+    @Test
+    fun `Generic classes recursive are supported`() {
+        val gt1 = makeRandomInstance<GT<Int>>()
+        val gtRecursive = makeRandomInstance<GT<GT<Int>>>()
+        gtRecursive.t = gt1
+        assertEquals(gt1, gtRecursive.t)
+
+        val gaaga: GAA<Long, GA<GT<Int>>> = makeRandomInstance()
+        assertEquals(gaaga.t1::class, Long::class)
+        assertTrue(gaaga.t2 is GA<GT<Int>>)
+
+        val gggg: GA<GA<GA<Int>>> = makeRandomInstance()
+        gggg.t.t.t = 10
+        assertEquals(10, gggg.t.t.t)
+        gggg.t.t = GA(20)
+        assertEquals(20, gggg.t.t.t)
+    }
+
+    @Test
+    fun `Generic classes with multiple arguments are supported`() {
+        val gaa1: GAA<Int, String> = makeRandomInstance()
+        assertEquals(gaa1.t1::class, Int::class)
+        assertEquals(gaa1.t2::class, String::class)
+
+        val gaa2: GAA<Long, List<Int>> = makeRandomInstance()
+        assertEquals(gaa2.t1::class, Long::class)
+        assertTrue(gaa2.t2 is List<Int>)
+
+        val gta: GTA<Long, String> = makeRandomInstance()
+        assertTrue(gta.t2.length > 1)
+    }
 }

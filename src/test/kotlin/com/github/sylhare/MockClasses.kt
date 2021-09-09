@@ -13,6 +13,12 @@ class E {
 }
 class F(private val hello: String)
 class G(val f1: F, val f2: F, val c: Char, val str: String, val l: Long, val m: Map<String, C>)
+class GT<T> {
+    var t: T? = null
+}
+class GA<T>(var t: T)
+class GAA<T1, T2>(val t1: T1, val t2: T2)
+class GTA<T1, T2>(val t2: T2)
 
 class L {
     val a: N by lazy { HELLO }

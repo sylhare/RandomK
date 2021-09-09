@@ -5,6 +5,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 val random: Random.Default = Random
+@ExperimentalStdlibApi
 internal fun makeStandardInstanceOrNull(clazz: KClass<*>, type: KType): Any? = when (clazz) {
     Any::class -> "Anything"
     Int::class -> random.nextInt()
@@ -20,6 +21,7 @@ internal fun makeStandardInstanceOrNull(clazz: KClass<*>, type: KType): Any? = w
     else -> null
 }
 
+@ExperimentalStdlibApi
 private fun makeRandomList(type: KType): List<Any?> {
     val numOfElements = random.nextInt(10)
     val elemType = type.arguments[0].type!!
@@ -27,6 +29,7 @@ private fun makeRandomList(type: KType): List<Any?> {
         .map { makeRandomInstance(elemType) }
 }
 
+@ExperimentalStdlibApi
 private fun makeRandomMap(type: KType): Map<Any?, Any?> {
     val numOfElements = random.nextInt(2, 10)
     val keyType = type.arguments[0].type!!
