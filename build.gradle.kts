@@ -23,6 +23,9 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+    }
 }
 
 tasks.withType<Wrapper> {

@@ -44,7 +44,7 @@ fun makeRandomInstance(clazz: KClass<*>, type: KType): Any? {
 
             return constructor.call(*arguments)
         } catch (e: Throwable) {
-            e.printStackTrace()
+            println("no-op. We catch any possible error here that might occur during class creation, ${e.message}")
         }
     }
 
