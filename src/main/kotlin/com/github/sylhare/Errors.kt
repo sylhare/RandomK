@@ -1,6 +1,6 @@
 package com.github.sylhare
 
-class NoUsableConstructor : Error()
+class NoUsableConstructor(message: String) : Error(message)
 
 fun <T> tryOf(method: () -> T): T? = try {
     method()

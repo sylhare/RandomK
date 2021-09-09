@@ -1,12 +1,11 @@
-package com.github.sylhare.random
+package com.github.sylhare
 
-import com.github.sylhare.makeRandomInstance
 import kotlin.random.Random
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 val random: Random.Default = Random
-internal fun makeStandardInstanceOrNull(clazz: KClass<*>, type: KType): Any? = when(clazz) {
+internal fun makeStandardInstanceOrNull(clazz: KClass<*>, type: KType): Any? = when (clazz) {
     Any::class -> "Anything"
     Int::class -> random.nextInt()
     Long::class -> random.nextLong()
@@ -16,6 +15,7 @@ internal fun makeStandardInstanceOrNull(clazz: KClass<*>, type: KType): Any? = w
     String::class -> makeRandomString()
     Boolean::class -> random.nextBoolean()
     List::class, Collection::class -> makeRandomList(type)
+    Set::class -> makeRandomList(type).toSet()
     Map::class -> makeRandomMap(type)
     else -> null
 }
@@ -28,7 +28,7 @@ private fun makeRandomList(type: KType): List<Any?> {
 }
 
 private fun makeRandomMap(type: KType): Map<Any?, Any?> {
-    val numOfElements = random.nextInt(10)
+    val numOfElements = random.nextInt(2, 10)
     val keyType = type.arguments[0].type!!
     val valType = type.arguments[1].type!!
     val keys = (1..numOfElements)

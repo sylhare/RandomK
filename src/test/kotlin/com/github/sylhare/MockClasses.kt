@@ -11,7 +11,7 @@ class E {
         throw Error("Do not use this one")
     }
 }
-class F(val hello: String)
+class F(private val hello: String)
 class G(val f1: F, val f2: F, val c: Char, val str: String, val l: Long, val m: Map<String, C>)
 
 class L {

@@ -111,8 +111,8 @@ class RandomKTest {
 
     @Test
     fun `Creates lists`() {
-        val ints = makeRandomInstance<List<Int>>()
-        assertTrue(ints is List<Int>)
+        val ints: List<Int> = makeRandomInstance()
+        assertEquals("class java.util.ArrayList", ints::class.toString())
         assertTrue(ints.toString().startsWith("["))
         assertTrue(ints.toString().endsWith("]"))
     }
@@ -120,11 +120,20 @@ class RandomKTest {
     @Test
     fun `Creates maps`() {
         val map = makeRandomInstance<Map<Long, String>>()
-        assertTrue(map is Map<Long, String>)
+        assertEquals(mapOf(1L to "string", 2L to "string")::class, map::class)
+        assertNotEquals(mapOf<Long, String>()::class, map::class)
         assertTrue(map.toString().startsWith("{"))
         assertTrue(map.toString().endsWith("}"))
 
-        assertTrue(makeRandomInstance<Collection<A>>() is Collection<A>)
+        assertEquals(linkedMapOf<String, B>()::class, makeRandomInstance<LinkedHashMap<String, B>>()::class)
+        assertEquals(hashMapOf<A, B>()::class, makeRandomInstance<HashMap<A, B>>()::class)
+    }
+
+
+    @Test
+    fun `Creates sets`() {
+        assertEquals(setOf(F("3"), F("2"))::class, makeRandomInstance<Set<F>>()::class)
+        assertEquals(HashSet<A>(A().hashCode())::class, makeRandomInstance<HashSet<F>>()::class)
     }
 
     @Test
@@ -137,6 +146,8 @@ class RandomKTest {
     @Disabled
     @Test
     fun `Creates primitives for Arrays`() {
-        assertTrue(makeRandomInstance<Array<Int>>() is Array<Int>)
+        assertEquals(intArrayOf(10, 20, 30, 40, 50)::class, makeRandomInstance<IntArray>()::class)
+        assertEquals(arrayOf("string")::class, makeRandomInstance<Array<String>>()::class)
+        assertEquals(arrayOf(1)::class, makeRandomInstance<Array<Int>>()::class)
     }
 }
