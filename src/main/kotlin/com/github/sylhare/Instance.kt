@@ -14,7 +14,7 @@ inline fun <reified T> makeRandomInstanceJVM(): T {
 }
 
 @ExperimentalStdlibApi
-inline fun <reified T: Any> makeRandomInstance(): T {
+inline fun <reified T : Any> makeRandomInstance(): T {
     return makeRandomInstance(T::class, typeOf<T>()) as T
 }
 
@@ -25,7 +25,7 @@ fun makeRandomInstance(type: KType): Any? {
 
 @ExperimentalStdlibApi
 fun makeRandomInstance(clazz: KClass<*>, type: KType): Any? {
-    if(type.isMarkedNullable && random.nextBoolean()) {
+    if (type.isMarkedNullable && random.nextBoolean()) {
         return null
     }
 

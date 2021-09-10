@@ -5,6 +5,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 val random: Random.Default = Random
+
 @ExperimentalStdlibApi
 internal fun makeStandardInstanceOrNull(clazz: KClass<*>, type: KType): Any? = when (clazz) {
     Any::class -> "Anything"
