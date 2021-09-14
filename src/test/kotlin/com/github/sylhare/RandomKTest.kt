@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 @ExperimentalStdlibApi
+@Suppress("USELESS_IS_CHECK")
 class RandomKTest {
 
     @Test

@@ -16,29 +16,29 @@ internal fun makeStandardInstanceOrNull(clazz: KClass<*>, type: KType): Any? = w
     Char::class -> makeRandomChar()
     String::class -> makeRandomString()
     Boolean::class -> random.nextBoolean()
-    List::class, Collection::class -> makeRandomList(type)
-    Set::class -> makeRandomList(type).toSet()
-    Map::class -> makeRandomMap(type)
+    List::class, Collection::class -> makeRandomList(clazz, type)
+    Set::class -> makeRandomList(clazz, type).toSet()
+    Map::class -> makeRandomMap(clazz, type)
     else -> null
 }
 
 @ExperimentalStdlibApi
-private fun makeRandomList(type: KType): List<Any?> {
+private fun makeRandomList(clazz: KClass<*>, type: KType): List<Any?> {
     val numOfElements = random.nextInt(10)
     val elemType = type.arguments[0].type!!
     return (1..numOfElements)
-        .map { makeRandomInstance(elemType) }
+        .map { makeRandomInstanceForParam(elemType, clazz, elemType) }
 }
 
 @ExperimentalStdlibApi
-private fun makeRandomMap(type: KType): Map<Any?, Any?> {
+private fun makeRandomMap(clazz: KClass<*>, type: KType): Map<Any?, Any?> {
     val numOfElements = random.nextInt(2, 10)
     val keyType = type.arguments[0].type!!
     val valType = type.arguments[1].type!!
     val keys = (1..numOfElements)
-        .map { makeRandomInstance(keyType) }
+        .map { makeRandomInstanceForParam(keyType, clazz, type) }
     val values = (1..numOfElements)
-        .map { makeRandomInstance(valType) }
+        .map { makeRandomInstanceForParam(valType, clazz, type) }
     return keys.zip(values).toMap()
 }
 
