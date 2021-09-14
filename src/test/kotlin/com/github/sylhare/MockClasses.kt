@@ -2,19 +2,32 @@ package com.github.sylhare
 
 
 object MockClasses {
-    class A
-    class B(val a: A)
-    class C(val a: A, val b: B)
-    data class D(val a: A, val b: B, val c: C)
+    class A {
+        override fun toString(): String = "A"
+    }
+    class B(val a: A) {
+        override fun toString() = "B(a=$a)"
+    }
+    class C(val a: A, val b: B) {
+        override fun toString() = "C(a=$a, b=$b)"
+    }
+    data class D(val a: A, val b: B, val c: C) {
+        override fun toString() = "D(a=$a, b=$b, c=$c)"
+    }
     class E {
         constructor(a: A)
         constructor() {
             throw Error("Do not use this one")
         }
+        override fun toString() = "E"
     }
 
-    class F(private val hello: String)
-    class G(val f1: F, val f2: F, val c: Char, val str: String, val l: Long, val m: Map<String, C>)
+    class F(private val hello: String) {
+        override fun toString() = "F(hello=$hello)"
+    }
+    class G(val f1: F, val f2: F, val c: Char, val str: String, val l: Long, val m: Map<String, C>) {
+        override fun toString() = "G(f1=$f1, f2=$f2, c=$c, str=$str, l=$l, m=$m)"
+    }
     class GT<T> {
         var t: T? = null
     }
@@ -22,7 +35,7 @@ object MockClasses {
     class GA<T>(var t: T)
     class GAA<T1, T2>(val t1: T1, val t2: T2)
     class GTA<T1, T2>(val t2: T2)
-
+    class H(val i: Int, val s: String, val l: List<A>)
     class L {
         val a: N by lazy { HELLO }
         lateinit var b: N

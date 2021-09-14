@@ -1,209 +1,88 @@
 package com.github.sylhare
 
-import com.github.sylhare.MockClasses.A
-import com.github.sylhare.MockClasses.B
-import com.github.sylhare.MockClasses.C
-import com.github.sylhare.MockClasses.D
-import com.github.sylhare.MockClasses.E
-import com.github.sylhare.MockClasses.F
-import com.github.sylhare.MockClasses.G
-import com.github.sylhare.MockClasses.GA
-import com.github.sylhare.MockClasses.GAA
-import com.github.sylhare.MockClasses.GT
-import com.github.sylhare.MockClasses.GTA
-import com.github.sylhare.MockClasses.L
-import com.github.sylhare.MockClasses.M
-import com.github.sylhare.MockClasses.P
-import com.github.sylhare.MockClasses.S
-
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import kotlin.reflect.typeOf
+import kotlin.random.Random
 
 @ExperimentalStdlibApi
-@Suppress("USELESS_IS_CHECK")
-class RandomKTest {
-
+internal class RandomKTest {
     @Test
-    fun `Creates a single instance using empty constructor`() {
-        val a: A = makeRandomInstance()
-        assertEquals(a::class.java, A::class.java)
-        assertTrue("A@" in a.toString(), "toString of A should contains A@ and it is $a")
-    }
-
-
-    @Test
-    fun `Creates a single instance using constructor with 1 variable`() {
-        val b: B = makeRandomInstance()
-        assertEquals(b::class.java, B::class.java)
-        assertTrue("B@" in b.toString(), "toString of B should contains B@ and it is $b")
+    fun `Creates mock with randomK`() {
+        val h: MockClasses.H = randomK()
+        assertEquals(h::class.java, MockClasses.H::class.java)
+        assertTrue(h.s.isNotEmpty())
+        assertTrue(h.l.isNotEmpty())
     }
 
     @Test
-    fun `Creates a single instance using constructor with 2 variables`() {
-        val c: C = makeRandomInstance()
-        assertEquals(c::class.java, C::class.java)
-        assertTrue("C@" in c.toString(), "toString of C should contains C@ and it is $c")
+    fun `Creates mock with config random seed in randomK`() {
+        val h: MockClasses.H = randomK(Random(123))
+        assertEquals(h::class.java, MockClasses.H::class.java)
+        assertEquals(h.i, randomK<MockClasses.H>(Random(123)).i)
+        assertEquals(h.s, randomK<MockClasses.H>(Random(123)).s)
+        assertEquals(h.l.size, randomK<MockClasses.H>(Random(123)).l.size)
     }
 
     @Test
-    fun `Creates a single instance using constructor from data class`() {
-        val d: D = makeRandomInstance()
-        assertEquals(d::class.java, D::class.java)
-        assertTrue("D(" in d.toString(), "toString of data class D should contains 'D(' and it is $d")
+    fun `Creates mock with config in randomK`() {
+        val any: Any = randomK(Random(123), RandomK.Config(1..10, 1..20, MockClasses.B(MockClasses.A())))
+        assertEquals(any::class.java, MockClasses.B::class.java)
     }
 
     @Test
-    fun `Skips constructors that cannot be used`() {
-        val e: E = makeRandomInstance()
-        assertEquals(e::class.java, E::class.java)
-        assertTrue("E@" in e.toString(), "toString of E should contains E@ and it is $e")
+    fun `When user expects empty collections, both Map and List are empty`() {
+        val config = RandomK.Config(collectionRange = 0..0)
+        repeat(10) {
+            assertEquals(emptyList<Int>(), randomK<List<Int>>(config = config))
+            assertEquals(emptyList<Int>(), randomK<List<List<Int>>>(config = config))
+            assertEquals(emptyMap<Int, String>(), randomK<Map<Int, String>>(config = config))
+        }
     }
 
     @Test
-    fun `With multiple constructors, takes a random one`() {
-        val m: M = makeRandomInstance()
-        assertEquals(m::class.java, M::class.java)
-        assertTrue((1..10).map { makeRandomInstance<M>().number }.toSet().size > 1)
+    fun `When user expects concrete collection size, both Map and List are of this size`() {
+        val config = RandomK.Config(collectionRange = 5..5)
+        repeat(10) {
+            assertEquals(5, randomK<List<Int>>(config = config).size)
+            assertEquals(5, randomK<List<List<Int>>>(config = config).size)
+            assertEquals(5, randomK<Map<Int, String>>(config = config).size)
+        }
     }
 
     @Test
-    fun `With lateinit and lazy variables`() {
-        val l: L = makeRandomInstance()
-        assertNotEquals(l.b, L("tada").b)
-        assertNotEquals(l.b.value, "hello")
-        assertEquals(l::class.java, L::class.java)
+    fun `When user expects concrete String length, all Strings have this length`() {
+        val config = RandomK.Config(stringRange = 5..5, collectionRange = 2..2)
+        repeat(10) {
+            assertEquals(5, randomK<String>(config = config).length)
+            assertEquals(5, randomK<List<String>>(config = config)[0].length)
+            assertEquals(5, randomK<List<List<String>>>(config = config)[1][1].length)
+        }
     }
 
     @Test
-    fun `Throws NoUsableConstructor for private constructor`() {
-        assertThrows<NoUsableConstructor> { makeRandomInstance<P>() }
+    fun `Object set in config as Any, is always returned when we expect Any`() {
+        val any = object {}
+        val config = RandomK.Config(any = any)
+        repeat(10) {
+            assertEquals(any, randomK(config = config))
+            assertEquals(any, randomK<MockClasses.GA<Any>>(config = config).t)
+            assertEquals(any, randomK<MockClasses.GA<MockClasses.GA<Any>>>(config = config).t.t)
+        }
     }
 
     @Test
-    fun `Throws NoUsableConstructor for a sealed class`() {
-        assertThrows<NoUsableConstructor> { makeRandomInstance<S>() }
-    }
-
-    @Test
-    fun `Creates number primitives`() {
-        assertEquals(Int::class, makeRandomInstance<Int>()::class)
-        assertEquals(Long::class, makeRandomInstance<Long>()::class)
-        assertEquals(Double::class, makeRandomInstance<Double>()::class)
-        assertEquals(Float::class, makeRandomInstance<Float>()::class)
-    }
-
-    @Test
-    fun `Creates character primitives`() {
-        val c = makeRandomInstance<Char>()
-        assertEquals(Char::class, c::class)
-        assertTrue(c.code in 23..123)
-        assertEquals(String::class, makeRandomInstance<String>()::class)
-    }
-
-    @Test
-    fun `Creates an instance using constructor with primitives and standard types`() {
-        val f: F = makeRandomInstance()
-        assertEquals(F::class, f::class)
-
-        val g: G = makeRandomInstance()
-        assertEquals(G::class, g::class)
-        assertTrue("G@" in g.toString(), "toString of G should contains G@ and it is $g")
-    }
-
-    @Test
-    fun `Creates lists`() {
-        val ints: List<Int> = makeRandomInstance()
-        assertEquals("class java.util.ArrayList", ints::class.toString())
-        assertTrue(ints.toString().startsWith("["))
-        assertTrue(ints.toString().endsWith("]"))
-    }
-
-    @Test
-    fun `Creates maps`() {
-        val map = makeRandomInstance<Map<Long, String>>()
-        assertEquals(mapOf(1L to "string", 2L to "string")::class, map::class)
-        assertNotEquals(mapOf<Long, String>()::class, map::class)
-        assertTrue(map.toString().startsWith("{"))
-        assertTrue(map.toString().endsWith("}"))
-
-        assertEquals(linkedMapOf<String, B>()::class, makeRandomInstance<LinkedHashMap<String, B>>()::class)
-        assertEquals(hashMapOf<A, B>()::class, makeRandomInstance<HashMap<A, B>>()::class)
-    }
-
-
-    @Test
-    fun `Creates sets`() {
-        val set: Set<F> = setOf(F("3"), F("2"))
-        assertEquals(set::class, makeRandomInstance<Set<F>>()::class)
-    }
-
-    @Test
-    fun `Creates collections`() {
-        val g = makeRandomInstance<G>()
-        assertEquals(G::class, g::class)
-        assertTrue(makeRandomInstance<Collection<A>>() is Collection<A>)
-    }
-
-    @Disabled
-    @Test
-    fun `Creates primitives for Arrays`() {
-        assertEquals(intArrayOf(10, 20, 30, 40, 50)::class, makeRandomInstance<IntArray>()::class)
-        assertEquals(arrayOf("string")::class, makeRandomInstance<Array<String>>()::class)
-        assertEquals(arrayOf(1)::class, makeRandomInstance<Array<Int>>()::class)
-    }
-
-    @Test
-    fun `Generic classes are supported`() {
-        val ga1: GA<Int> = makeRandomInstance()
-        assertEquals(ga1.t::class, Int::class)
-
-        val ga2: GA<String> = makeRandomInstance()
-        assertEquals(ga2.t::class, String::class)
-    }
-
-    @Test
-    fun `Generic classes are supported default constructor`() {
-        val gt1 = makeRandomInstance<GT<Int>>()
-        gt1.t = 1
-        assertEquals(1, gt1.t)
-
-        val gt2 = makeRandomInstance<GT<Long>>()
-        gt2.t = 1L
-        assertEquals(1L, gt2.t)
-    }
-
-    @Test
-    fun `Generic classes recursive are supported`() {
-        val gt1 = makeRandomInstance<GT<Int>>()
-        val gtRecursive = makeRandomInstance<GT<GT<Int>>>()
-        gtRecursive.t = gt1
-        assertEquals(gt1, gtRecursive.t)
-
-        val gaaga: GAA<Long, GA<GT<Int>>> = makeRandomInstance()
-        assertEquals(gaaga.t1::class, Long::class)
-        assertTrue(gaaga.t2 is GA<GT<Int>>)
-
-        val gggg: GA<GA<GA<Int>>> = makeRandomInstance()
-        gggg.t.t.t = 10
-        assertEquals(10, gggg.t.t.t)
-        gggg.t.t = GA(20)
-        assertEquals(20, gggg.t.t.t)
-    }
-
-    @Test
-    fun `Generic classes with multiple arguments are supported`() {
-        val gaa1: GAA<Int, String> = makeRandomInstance()
-        assertEquals(gaa1.t1::class, Int::class)
-        assertEquals(gaa1.t2::class, String::class)
-
-        val gaa2: GAA<Long, List<Int>> = makeRandomInstance()
-        assertEquals(gaa2.t1::class, Long::class)
-        assertTrue(gaa2.t2 is List<Int>)
-
-        val gta: GTA<Long, String> = makeRandomInstance()
-        assertTrue(gta.t2.length > 1)
+    fun `Check expected random values`() {
+        val random = Random(12345)
+        assertEquals("A", randomK<MockClasses.A>(random)::class.java.simpleName.toString())
+        assertEquals("B(a=A)", randomK<MockClasses.B>(random).toString())
+        assertEquals("C(a=A, b=B(a=A))", randomK<MockClasses.C>(random).toString())
+        assertEquals("D(a=A, b=B(a=A), c=C(a=A, b=B(a=A)))", randomK<MockClasses.D>(random).toString())
+        assertEquals("E", randomK<MockClasses.E>(random).toString())
+        assertEquals("F(hello=ySkcjX`jn[vxAkBvoWGUkC\\\\kp]U`Nc`tCacMffjYG)", randomK<MockClasses.F>(random).toString())
+        assertEquals(
+            "G(f1=F(hello=dUnA[trp_JLM]iD^yBz`AG), f2=F(hello=wIMmdtGFCTcKrSYMlUYHbkcUJxl^\\dBAlOpa^clPXl]oo), c=z, str=VBMFC]iPLfX[E, l=-6823738243163818250, m={loXcypXgZ]lILXfgexZwcuxcPgJdGYDLUYDSdnmLFcz^DXlas=C(a=A, b=B(a=A))})",
+            randomK<MockClasses.G>(random).toString()
+        )
     }
 }

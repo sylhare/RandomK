@@ -1,8 +1,8 @@
 package com.github.sylhare
 
+import kotlin.random.Random
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
-import kotlin.reflect.KTypeParameter
 import kotlin.reflect.typeOf
 
 inline fun <reified T> makeRandomInstanceNoArgs(): T {
@@ -15,53 +15,11 @@ inline fun <reified T> makeRandomInstanceJVM(): T {
 
 @ExperimentalStdlibApi
 fun makeRandomInstance(type: KType): Any? {
-    return makeRandomInstance(type.classifier as KClass<*>, type)
+    return RandomProducer(Random, RandomK.Config()).makeRandomInstance(type.classifier as KClass<*>, type)
 }
 
 @ExperimentalStdlibApi
 inline fun <reified T : Any> makeRandomInstance(): T {
-    return makeRandomInstance(T::class, typeOf<T>()) as T
+    return RandomProducer(Random, RandomK.Config()).makeRandomInstance(T::class, typeOf<T>()) as T
 }
 
-
-@ExperimentalStdlibApi
-fun makeRandomInstance(clazz: KClass<*>, type: KType): Any? {
-    if (type.isMarkedNullable && random.nextBoolean()) {
-        return null
-    }
-
-    val primitive = makeStandardInstanceOrNull(clazz, type)
-    if (primitive != null) {
-        return primitive
-    }
-
-    val constructors = clazz.constructors.shuffled(random)
-
-    constructors.forEach { constructor ->
-        try {
-            val arguments = constructor.parameters
-                .map { makeRandomInstanceForParam(it.type, clazz, type) }
-                .toTypedArray()
-
-            return constructor.call(*arguments)
-        } catch (e: Throwable) {
-            println("no-op. We catch any possible error here that might occur during class creation, ${e.message}")
-        }
-    }
-
-    throw NoUsableConstructor(constructors.toString())
-}
-
-@ExperimentalStdlibApi
-fun makeRandomInstanceForParam(paramType: KType, clazz: KClass<*>, type: KType): Any? {
-    return when (val classifier = paramType.classifier) {
-        is KClass<*> -> makeRandomInstance(classifier, paramType)
-        is KTypeParameter -> {
-            val typeParameterName = classifier.name
-            val typeParameterId = clazz.typeParameters.indexOfFirst { it.name == typeParameterName }
-            val parameterType = type.arguments[typeParameterId].type ?: typeOf<String>()
-            makeRandomInstance(parameterType.classifier as KClass<*>, parameterType)
-        }
-        else -> throw Error("Type of the classifier $classifier is not supported")
-    }
-}
