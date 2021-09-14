@@ -14,14 +14,15 @@ inline fun <reified T> makeRandomInstanceJVM(): T {
 }
 
 @ExperimentalStdlibApi
+fun makeRandomInstance(type: KType): Any? {
+    return makeRandomInstance(type.classifier as KClass<*>, type)
+}
+
+@ExperimentalStdlibApi
 inline fun <reified T : Any> makeRandomInstance(): T {
     return makeRandomInstance(T::class, typeOf<T>()) as T
 }
 
-@ExperimentalStdlibApi
-fun makeRandomInstance(type: KType): Any? {
-    return makeRandomInstance(type.classifier as KClass<*>, type)
-}
 
 @ExperimentalStdlibApi
 fun makeRandomInstance(clazz: KClass<*>, type: KType): Any? {
@@ -52,7 +53,7 @@ fun makeRandomInstance(clazz: KClass<*>, type: KType): Any? {
 }
 
 @ExperimentalStdlibApi
-private fun makeRandomInstanceForParam(paramType: KType, clazz: KClass<*>, type: KType): Any? {
+fun makeRandomInstanceForParam(paramType: KType, clazz: KClass<*>, type: KType): Any? {
     return when (val classifier = paramType.classifier) {
         is KClass<*> -> makeRandomInstance(classifier, paramType)
         is KTypeParameter -> {

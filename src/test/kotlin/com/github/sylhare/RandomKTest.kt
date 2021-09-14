@@ -20,24 +20,11 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.reflect.typeOf
 
 @ExperimentalStdlibApi
 @Suppress("USELESS_IS_CHECK")
 class RandomKTest {
-
-    @Test
-    fun `Creates single instance using an empty constructor JVM only`() {
-        val a: A = makeRandomInstanceJVM()
-        assertEquals(a::class.java, A::class.java)
-        assertTrue("A@" in a.toString(), "toString of A should contains A@ and it is $a")
-    }
-
-    @Test
-    fun `Creates single instance using an empty constructor`() {
-        val a: A = makeRandomInstanceNoArgs()
-        assertEquals(a::class.java, A::class.java)
-        assertTrue("A@" in a.toString(), "toString of A should contains A@ and it is $a")
-    }
 
     @Test
     fun `Creates a single instance using empty constructor`() {
