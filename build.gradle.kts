@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.5.0"
     `maven-publish`
+    jacoco
 }
 
 group = "com.github.sylhare"
@@ -24,6 +25,17 @@ tasks.test {
     testLogging {
         showStandardStreams = true
     }
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+    classDirectories.setFrom(files(classDirectories.files.map {
+            fileTree(it) { exclude("") }
+        })
+    )
 }
 
 tasks.withType<Wrapper> {
