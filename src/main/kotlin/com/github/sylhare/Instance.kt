@@ -15,11 +15,11 @@ inline fun <reified T> makeRandomInstanceJVM(): T {
 
 @ExperimentalStdlibApi
 fun makeRandomInstance(type: KType): Any? {
-    return RandomProducer(Random, RandomK.Config()).makeRandomInstance(type.classifier as KClass<*>, type)
+    return RandomProducer(Random, RandomK.Config()).make(type.classifier as KClass<*>, type)
 }
 
 @ExperimentalStdlibApi
 inline fun <reified T : Any> makeRandomInstance(): T {
-    return RandomProducer(Random, RandomK.Config()).makeRandomInstance(T::class, typeOf<T>()) as T
+    return RandomProducer(Random, RandomK.Config()).make(T::class, typeOf<T>()) as T
 }
 

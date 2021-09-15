@@ -5,6 +5,6 @@ class NoUsableConstructor(message: String) : Error(message)
 fun <T> tryOf(method: () -> T): T? = try {
     method()
 } catch (e: Throwable) {
-    println("no-op. We catch any possible error here that might occur during class creation, ${e.message}")
+    println("Can't use randomly selected constructor, ${e.stackTrace}")
     null
 }

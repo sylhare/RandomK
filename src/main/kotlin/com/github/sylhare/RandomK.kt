@@ -10,12 +10,10 @@ inline fun <reified T : Any> randomK(
     config: RandomK.Config = RandomK.Config()
 ): T {
     val producer = RandomProducer(random, config)
-    return producer.makeRandomInstance(T::class, typeOf<T>()) as T
+    return producer.make(T::class, typeOf<T>()) as T
 }
 
-@ExperimentalStdlibApi
 object RandomK {
-
     class Config(
         var collectionRange: IntRange = 1..5,
         var stringRange: IntRange = 1..50,

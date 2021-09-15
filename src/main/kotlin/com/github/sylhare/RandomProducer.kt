@@ -8,54 +8,33 @@ import kotlin.reflect.typeOf
 
 
 @ExperimentalStdlibApi
-class RandomProducer(
-    private val random: Random,
-    private val config: RandomK.Config
-) {
+class RandomProducer(private val random: Random, private val config: RandomK.Config) {
 
-
-    private fun makeRandomInstanceForParam(paramType: KType, clazz: KClass<*>, type: KType): Any? {
-        return when (val classifier = paramType.classifier) {
-            is KClass<*> -> makeRandomInstance(classifier, paramType)
-            is KTypeParameter -> {
-                val typeParameterName = classifier.name
-                val typeParameterId = clazz.typeParameters.indexOfFirst { it.name == typeParameterName }
-                val parameterType = type.arguments[typeParameterId].type ?: typeOf<Any>()
-                makeRandomInstance(parameterType.classifier as KClass<*>, parameterType)
-            }
-            else -> throw Error("Type of the classifier $classifier is not supported")
-        }
+    /**
+     * To make a random instance:
+     *  - T?: randomly makes field null
+     *  - T is a primitive type: use primitive constructor
+     *  - T is not primitive: randomly select a custom constructor
+     */
+    fun make(clazz: KClass<*>, type: KType): Any? = when {
+        type.isMarkedNullable && random.nextBoolean() -> null
+        else -> primitiveOrNull(clazz, type) ?: customOrNull(clazz, type)
     }
 
-
-    fun makeRandomInstance(clazz: KClass<*>, type: KType): Any? {
-        if (type.isMarkedNullable && random.nextBoolean()) {
-            return null
-        }
-
-        val primitive = makeStandardInstanceOrNull(clazz, type)
-        if (primitive != null) {
-            return primitive
-        }
-
-        val constructors = clazz.constructors.shuffled(random)
-        constructors.forEach { constructor ->
-            try {
+    private fun customOrNull(clazz: KClass<*>, type: KType): Any {
+        clazz.constructors.shuffled(random).forEach { constructor ->
+            tryOf {
                 val arguments = constructor.parameters
                     .map { makeRandomInstanceForParam(it.type, clazz, type) }
                     .toTypedArray()
 
-                return constructor.call(*arguments)
-            } catch (e: Throwable) {
-                println("no-op. We catch any possible error here that might occur during class creation")
-                e.printStackTrace()
-            }
+                constructor.call(*arguments)
+            }?.let { return it }
         }
-
-        throw NoUsableConstructor("For class: $clazz, with KType: $type, and constructor(s): $constructors")
+        throw NoUsableConstructor("For class: $clazz, with KType: $type")
     }
 
-    private fun makeStandardInstanceOrNull(clazz: KClass<*>, type: KType) = when (clazz) {
+    private fun primitiveOrNull(clazz: KClass<*>, type: KType) = when (clazz) {
         Any::class -> config.any
         Int::class -> random.nextInt()
         Long::class -> random.nextLong()
@@ -68,6 +47,19 @@ class RandomProducer(
         Set::class -> makeRandomList(clazz, type).toSet()
         Map::class -> makeRandomMap(clazz, type)
         else -> null
+    }
+
+    private fun makeRandomInstanceForParam(paramType: KType, clazz: KClass<*>, type: KType): Any? {
+        return when (val classifier = paramType.classifier) {
+            is KClass<*> -> make(classifier, paramType)
+            is KTypeParameter -> {
+                val typeParameterName = classifier.name
+                val typeParameterId = clazz.typeParameters.indexOfFirst { it.name == typeParameterName }
+                val parameterType = type.arguments[typeParameterId].type ?: typeOf<Any>()
+                make(parameterType.classifier as KClass<*>, parameterType)
+            }
+            else -> throw Error("Type of the classifier $classifier is not supported")
+        }
     }
 
     private fun makeRandomList(clazz: KClass<*>, type: KType): List<Any?> {
