@@ -11,16 +11,16 @@ import com.github.sylhare.MockClasses.GA
 import com.github.sylhare.MockClasses.GAA
 import com.github.sylhare.MockClasses.GT
 import com.github.sylhare.MockClasses.GTA
+import com.github.sylhare.MockClasses.I
+import com.github.sylhare.MockClasses.J
 import com.github.sylhare.MockClasses.L
 import com.github.sylhare.MockClasses.M
 import com.github.sylhare.MockClasses.P
 import com.github.sylhare.MockClasses.S
-
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import kotlin.reflect.typeOf
 
 @ExperimentalStdlibApi
 @Suppress("USELESS_IS_CHECK")
@@ -83,6 +83,11 @@ class RandomProducerTest {
     }
 
     @Test
+    fun `Creates boolean primitives`() {
+        assertEquals(Boolean::class, makeRandomInstance<Boolean>()::class)
+    }
+
+    @Test
     fun `Creates number primitives`() {
         assertEquals(Int::class, makeRandomInstance<Int>()::class)
         assertEquals(Long::class, makeRandomInstance<Long>()::class)
@@ -118,8 +123,7 @@ class RandomProducerTest {
     @Test
     fun `Creates maps`() {
         val map = makeRandomInstance<Map<Long, String>>()
-        assertEquals(mapOf(1L to "string", 2L to "string")::class, map::class)
-        assertNotEquals(mapOf<Long, String>()::class, map::class)
+        assertTrue(map is Map<Long, String>)
         assertTrue(map.toString().startsWith("{"))
         assertTrue(map.toString().endsWith("}"))
 
@@ -127,11 +131,22 @@ class RandomProducerTest {
         assertEquals(hashMapOf<A, B>()::class, makeRandomInstance<HashMap<A, B>>()::class)
     }
 
+    @Test
+    fun `Creates an instance using constructor with collections, primitives and standard types`() {
+        val i: I = makeRandomInstance()
+        assertTrue(i is I)
+        assertTrue(i.ints is List<Int>)
+        assertTrue(i.ints.firstOrNull() is Int?)
+
+        val j: J = makeRandomInstance()
+        assertTrue(j is J)
+        assertTrue(j.map.all { (k, v) -> k is Long && v is String })
+    }
+
 
     @Test
     fun `Creates sets`() {
-        val set: Set<F> = setOf(F("3"), F("2"))
-        assertEquals(set::class, makeRandomInstance<Set<F>>()::class)
+        assertTrue(makeRandomInstance<Set<F>>() is Set<F>)
     }
 
     @Test

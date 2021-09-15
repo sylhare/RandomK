@@ -43,6 +43,8 @@ object MockClasses {
     class GAA<T1, T2>(val t1: T1, val t2: T2)
     class GTA<T1, T2>(val t2: T2)
     class H(val i: Int, val s: String, val l: List<A>)
+    class I(val ints: List<Int>)
+    class J(val map: Map<Long, String>)
     class L {
         val a: N by lazy { HELLO }
         lateinit var b: N
