@@ -77,11 +77,11 @@ internal class RandomKTest {
         assertEquals("A", randomK<MockClasses.A>(random)::class.java.simpleName.toString())
         assertEquals("B(a=A)", randomK<MockClasses.B>(random).toString())
         assertEquals("C(a=A, b=B(a=A))", randomK<MockClasses.C>(random).toString())
-        assertEquals("D(a=A, b=B(a=A), c=C(a=A, b=B(a=A)))", randomK<MockClasses.D>(random).toString())
+        assertEquals("D(a=A, b=null, c=C(a=A, b=B(a=A)))", randomK<MockClasses.D>(random).toString())
         assertEquals("E", randomK<MockClasses.E>(random).toString())
-        assertEquals("F(hello=ySkcjX`jn[vxAkBvoWGUkC\\\\kp]U`Nc`tCacMffjYG)", randomK<MockClasses.F>(random).toString())
+        assertEquals("F(hello=SkcjX`jn[vxAkBvoWGUkC\\\\kp]U`N)", randomK<MockClasses.F>(random).toString())
         assertEquals(
-            "G(f1=F(hello=dUnA[trp_JLM]iD^yBz`AG), f2=F(hello=wIMmdtGFCTcKrSYMlUYHbkcUJxl^\\dBAlOpa^clPXl]oo), c=z, str=VBMFC]iPLfX[E, l=-6823738243163818250, m={loXcypXgZ]lILXfgexZwcuxcPgJdGYDLUYDSdnmLFcz^DXlas=C(a=A, b=B(a=A))})",
+            "G(f1=F(hello=`tCacMffjYGtd), f2=F(hello=nA[trp_JLM]iD^yBz`AGmwIMmdtGFCTcKrSYMlUYH), c=b, str=cUJxl^\\dBAlOpa^clPXl]oozUVBMFC], l=7449062515800925810, m={X[Em=C(a=A, b=B(a=A))})",
             randomK<MockClasses.G>(random).toString()
         )
     }

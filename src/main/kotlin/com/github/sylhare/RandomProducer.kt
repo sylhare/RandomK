@@ -89,7 +89,8 @@ class RandomProducer(
     }
 
     private fun makeRandomChar(random: Random) = ('A'..'z').random(random)
-    private fun makeRandomString(random: Random) = (1..random.nextInt(config.stringRange.first, config.stringRange.last + 1))
-        .map { makeRandomChar(random) }
-        .joinToString(separator = "") { "$it" }
+    private fun makeRandomString(random: Random) =
+        (1..random.nextInt(config.stringRange.first, config.stringRange.last + 1))
+            .map { makeRandomChar(random) }
+            .joinToString(separator = "") { "$it" }
 }
