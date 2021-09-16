@@ -9,8 +9,8 @@ inline fun <reified T : Any> randomK(
     random: Random = Random,
     config: RandomK.Config = RandomK.Config()
 ): T {
-    val producer = RandomProducer(random, config)
-    return producer.make(T::class, typeOf<T>()) as T
+    val producer = RandomBuilder(random, config)
+    return producer.build(T::class, typeOf<T>()) as T
 }
 
 object RandomK {

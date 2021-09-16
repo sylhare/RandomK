@@ -24,7 +24,7 @@ import org.junit.jupiter.api.assertThrows
 
 @ExperimentalStdlibApi
 @Suppress("USELESS_IS_CHECK")
-class RandomProducerTest {
+class RandomBuilderTest {
 
     @Test
     fun `Creates a single instance using empty constructor`() {
