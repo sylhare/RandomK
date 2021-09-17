@@ -10,8 +10,8 @@ Based on [Marcin Moskala](https://github.com/MarcinMoskala) from [Kt Academy](ht
 
 #### Create a GitHub Personal Access Token
 
-To use the packages hosted on the GPR (GitHub Package Registry) you need your username/token.
-Add the GPR as a repository inside your [build.gradle.kts](Example/build.gradle.kts):
+To use the packages hosted on the GPR (GitHub Package Registry) you need your username/token. Add the GPR as a
+repository inside your [build.gradle.kts](Example/build.gradle.kts):
 
 ```kotlin
 maven {
@@ -20,7 +20,6 @@ maven {
         username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
         password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
     }
-
 }
 ```
 
@@ -40,12 +39,13 @@ dependencies {
 ```
 
 With the latest version available, check out the [_package_](https://github.com/sylhare/RandomK/packages/978387) section 😉 
+
 Find the full example [here](Example).
 
 ### In your code
 
-Since we're using `typeOf<T>()` fom kotlin-reflect to detect the retention type (introduced in kotlin v1.3), 
-the library is under the `@ExperimentalStdlibApi`.
+Since we're using `typeOf<T>()` fom kotlin-reflect to detect the retention type (introduced in kotlin v1.3), the library
+is under the `@ExperimentalStdlibApi`.
 
 You can create a random instance with `randomK` like:
 
