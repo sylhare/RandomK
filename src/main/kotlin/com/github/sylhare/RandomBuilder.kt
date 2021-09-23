@@ -4,10 +4,9 @@ import kotlin.random.Random
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeParameter
-import kotlin.reflect.typeOf
+import kotlin.reflect.full.createType
 
 
-@ExperimentalStdlibApi
 class RandomBuilder(private val random: Random, private val config: RandomK.Config) {
 
     /**
@@ -36,7 +35,7 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
 
     private fun primitiveOrNull(clazz: KClass<*>, type: KType): Any? = when (clazz) {
         Any::class -> config.any
-        Byte:: class -> random.nextInt().toByte()
+        Byte::class -> random.nextInt().toByte()
         ByteArray::class -> buildString().toByteArray()
         Int::class -> random.nextInt()
         Long::class -> random.nextLong()
@@ -57,7 +56,7 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
             is KTypeParameter -> {
                 val typeParameterName = classifier.name
                 val typeParameterId = clazz.typeParameters.indexOfFirst { it.name == typeParameterName }
-                val parameterType = type.arguments[typeParameterId].type ?: typeOf<Any>()
+                val parameterType = type.arguments[typeParameterId].type ?: Any::class.createType()
                 build(parameterType.classifier as KClass<*>, parameterType)
             }
             else -> throw Error("Type of the classifier $classifier is not supported")
@@ -65,14 +64,13 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
     }
 
     private fun buildList(clazz: KClass<*>, type: KType): List<Any?> {
-        val numOfElements = random.nextInt(config.collectionRange.first, config.collectionRange.last + 1)
         val elemType = type.arguments[0].type!!
-        return (1..numOfElements)
+        return (1..config.numberOfElements(random))
             .map { buildParameter(elemType, clazz, type) }
     }
 
     private fun buildMap(clazz: KClass<*>, type: KType): Map<Any?, Any?> {
-        val numOfElements = random.nextInt(config.collectionRange.first, config.collectionRange.last + 1)
+        val numOfElements = config.numberOfElements(random)
         val keyType = type.arguments[0].type!!
         val valType = type.arguments[1].type!!
         val keys = (1..numOfElements)
@@ -83,8 +81,7 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
     }
 
     private fun buildChar() = ('A'..'z').random(random)
-    private fun buildString() =
-        (1..random.nextInt(config.stringRange.first, config.stringRange.last + 1))
-            .map { buildChar() }
-            .joinToString(separator = "") { "$it" }
+    private fun buildString() = (1..config.numberOfChars(random))
+        .map { buildChar() }
+        .joinToString(separator = "") { "$it" }
 }

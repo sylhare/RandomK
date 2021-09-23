@@ -13,7 +13,6 @@ inline fun <reified T> makeRandomInstanceJVM(): T {
     return T::class.java.getDeclaredConstructor().newInstance()
 }
 
-@ExperimentalStdlibApi
 fun makeRandomInstance(type: KType): Any? {
     return RandomBuilder(Random, RandomK.Config()).build(type.classifier as KClass<*>, type)
 }

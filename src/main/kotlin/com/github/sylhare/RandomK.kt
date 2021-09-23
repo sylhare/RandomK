@@ -9,8 +9,7 @@ inline fun <reified T : Any> randomK(
     random: Random = Random,
     config: RandomK.Config = RandomK.Config()
 ): T {
-    val producer = RandomBuilder(random, config)
-    return producer.build(T::class, typeOf<T>()) as T
+    return RandomBuilder(random, config).build(T::class, typeOf<T>()) as T
 }
 
 object RandomK {
@@ -18,5 +17,8 @@ object RandomK {
         var collectionRange: IntRange = 1..5,
         var stringRange: IntRange = 1..50,
         var any: Any = "Anything"
-    )
+    ) {
+        fun numberOfElements(random: Random) = random.nextInt(this.collectionRange.first, this.collectionRange.last + 1)
+        fun numberOfChars(random: Random) = random.nextInt(this.stringRange.first, this.stringRange.last + 1)
+    }
 }
