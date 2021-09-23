@@ -34,8 +34,10 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
         throw NoUsableConstructor("For class: $clazz, with KType: $type")
     }
 
-    private fun primitiveOrNull(clazz: KClass<*>, type: KType) = when (clazz) {
+    private fun primitiveOrNull(clazz: KClass<*>, type: KType): Any? = when (clazz) {
         Any::class -> config.any
+        Byte:: class -> random.nextInt().toByte()
+        ByteArray::class -> buildString(random).toByteArray()
         Int::class -> random.nextInt()
         Long::class -> random.nextLong()
         Double::class -> random.nextDouble()

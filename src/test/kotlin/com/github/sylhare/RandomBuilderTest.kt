@@ -96,6 +96,16 @@ class RandomBuilderTest {
     }
 
     @Test
+    fun `Creates Byte primitives`() {
+        assertEquals(Byte::class, makeRandomInstance<Byte>()::class)
+    }
+
+    @Test
+    fun `Creates ByteArray primitives`() {
+        assertEquals(ByteArray::class, makeRandomInstance<ByteArray>()::class)
+    }
+
+    @Test
     fun `Creates character primitives`() {
         val c = makeRandomInstance<Char>()
         assertEquals(Char::class, c::class)
