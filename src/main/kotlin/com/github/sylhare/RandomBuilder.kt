@@ -37,13 +37,13 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
     private fun primitiveOrNull(clazz: KClass<*>, type: KType): Any? = when (clazz) {
         Any::class -> config.any
         Byte:: class -> random.nextInt().toByte()
-        ByteArray::class -> buildString(random).toByteArray()
+        ByteArray::class -> buildString().toByteArray()
         Int::class -> random.nextInt()
         Long::class -> random.nextLong()
         Double::class -> random.nextDouble()
         Float::class -> random.nextFloat()
-        Char::class -> buildChar(random)
-        String::class -> buildString(random)
+        Char::class -> buildChar()
+        String::class -> buildString()
         Boolean::class -> random.nextBoolean()
         List::class, Collection::class -> buildList(clazz, type)
         Set::class -> buildList(clazz, type).toSet()
@@ -82,9 +82,9 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
         return keys.zip(values).toMap()
     }
 
-    private fun buildChar(random: Random) = ('A'..'z').random(random)
-    private fun buildString(random: Random) =
+    private fun buildChar() = ('A'..'z').random(random)
+    private fun buildString() =
         (1..random.nextInt(config.stringRange.first, config.stringRange.last + 1))
-            .map { buildChar(random) }
+            .map { buildChar() }
             .joinToString(separator = "") { "$it" }
 }
