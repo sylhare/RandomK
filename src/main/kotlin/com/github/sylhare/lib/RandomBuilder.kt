@@ -16,12 +16,18 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
      */
     fun build(clazz: KClass<*>, type: KType): Any? = when {
         type.isMarkedNullable && random.nextBoolean() -> null
-        clazz.java.isArray -> buildArrayOrNull(clazz, type)
+        clazz.java.isArray -> buildArray(clazz)
         else -> primitiveOrNull(clazz, type) ?: customOrNull(clazz, type)
     }
 
-    private fun buildArrayOrNull(clazz: KClass<*>, type: KType): Array<*> {
-        return java.lang.reflect.Array.newInstance(clazz::class.java, 10) as Array<*>
+    private fun buildArray(clazz: KClass<*>): Any {
+        return when (clazz) {
+            ByteArray::class -> buildString().toByteArray()
+            Array<String>::class -> arrayOf(buildString())
+            Array<Int>::class -> arrayOf(random.nextInt())
+            IntArray::class -> intArrayOf(random.nextInt())
+            else -> emptyArray<Any>()
+        }
     }
 
     private fun customOrNull(clazz: KClass<*>, type: KType): Any {
@@ -40,7 +46,6 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
     private fun primitiveOrNull(clazz: KClass<*>, type: KType): Any? = when (clazz) {
         Any::class -> config.any
         Byte::class -> random.nextInt().toByte()
-        ByteArray::class -> buildString().toByteArray()
         Int::class -> random.nextInt()
         Long::class -> random.nextLong()
         Double::class -> random.nextDouble()

@@ -99,8 +99,9 @@ class RandomBuilderTest {
     }
 
     @Test
-    fun `Creates ByteArray primitives`() {
+    fun `Creates ByteArray and IntArray primitives`() {
         assertEquals(ByteArray::class, makeRandomInstance<ByteArray>()::class)
+        assertEquals(intArrayOf(10, 20, 30, 40, 50)::class, makeRandomInstance<IntArray>()::class)
     }
 
     @Test
@@ -164,13 +165,20 @@ class RandomBuilderTest {
         assertTrue(makeRandomInstance<Collection<A>>() is Collection<A>)
     }
 
-    //@Disabled
     @Test
     fun `Creates primitives for Arrays`() {
-        //  assertEquals(arrayOf("this", "is", "a", "string", "array")::class, Array<String>::class)
-        //assertEquals(intArrayOf(10, 20, 30, 40, 50)::class, makeRandomInstance<IntArray>()::class)
-        //assertEquals(arrayOf(1)::class, makeRandomInstance<Array<Int>>()::class)
+        assertEquals(arrayOf("this", "is", "a", "string", "array")::class, Array<String>::class)
+        assertEquals(arrayOf(1)::class, makeRandomInstance<Array<Int>>()::class)
         assertEquals(arrayOf("string")::class, makeRandomInstance<Array<String>>()::class)
+        assertEquals(arrayOf(arrayOf(1L))::class, Array<Array<Long>>::class)
+    }
+
+    // TODO cast Array<Any> / Object[] to Array<T>
+    @Test
+    fun `Creates primitives for other Arrays`() {
+        assertThrows<ClassCastException> { makeRandomInstance<Array<A>>() }
+        //assertEquals(arrayOf(A())::class, makeRandomInstance<Array<A>>()::class)
+        //assertEquals(arrayOf(arrayOf(A()))::class, Array<Array<A>>::class)
     }
 
     @Test

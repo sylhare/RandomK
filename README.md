@@ -1,6 +1,12 @@
 # RandomK
 
-Based on [Marcin Moskala](https://github.com/MarcinMoskala) from [Kt Academy](https://kt.academy/)'s article:
+Create random instance from a class. It
+uses [`kotlin-reflect`](https://kotlinlang.org/docs/reflection.html#class-references)
+to create by reflection the instance.
+
+> _Reflection_ is a set of language and library features that allows for introspecting the structure of your own program at runtime.
+
+Based on [Marcin Moskala](https://github.com/MarcinMoskala) from [Kt Academy](https://kt.academy/) 's article:
 
 - [Creating a random instance of any class in Kotlin](https://blog.kotlin-academy.com/creating-a-random-instance-of-any-class-in-kotlin-b6168655b64a)
 
@@ -38,7 +44,8 @@ dependencies {
 }
 ```
 
-With the latest version available, check out the [_package_](https://github.com/sylhare/RandomK/packages/978387) section 😉 
+With the latest version available, check out the [_package_](https://github.com/sylhare/RandomK/packages/978387) section
+😉
 
 Find the full example [here](Example).
 
