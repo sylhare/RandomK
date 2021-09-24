@@ -1,9 +1,8 @@
-package com.github.sylhare
+package com.github.sylhare.lib
 
+import com.github.sylhare.RandomK
 import kotlin.random.Random
-import kotlin.reflect.KClass
-import kotlin.reflect.KType
-import kotlin.reflect.KTypeParameter
+import kotlin.reflect.*
 import kotlin.reflect.full.createType
 
 
@@ -17,7 +16,12 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
      */
     fun build(clazz: KClass<*>, type: KType): Any? = when {
         type.isMarkedNullable && random.nextBoolean() -> null
+        clazz.java.isArray -> buildArrayOrNull(clazz, type)
         else -> primitiveOrNull(clazz, type) ?: customOrNull(clazz, type)
+    }
+
+    private fun buildArrayOrNull(clazz: KClass<*>, type: KType): Array<*> {
+        return java.lang.reflect.Array.newInstance(clazz::class.java, 10) as Array<*>
     }
 
     private fun customOrNull(clazz: KClass<*>, type: KType): Any {

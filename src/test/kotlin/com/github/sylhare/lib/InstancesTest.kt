@@ -1,4 +1,4 @@
-package com.github.sylhare
+package com.github.sylhare.lib
 
 import com.github.sylhare.mock.MockClasses
 import org.junit.jupiter.api.Assertions

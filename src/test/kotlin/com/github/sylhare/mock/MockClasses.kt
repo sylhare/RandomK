@@ -1,6 +1,7 @@
 package com.github.sylhare.mock
 
 
+@Suppress("UNUSED_PARAMETER")
 object MockClasses {
     class A {
         override fun toString(): String = "A"
@@ -47,7 +48,7 @@ object MockClasses {
     class J(val map: Map<Long, String>)
     class L {
         val a: N by lazy { HELLO }
-        lateinit var b: N
+        var b: N = N("default")
 
         constructor(str: String) {
             this.b = N(str)
