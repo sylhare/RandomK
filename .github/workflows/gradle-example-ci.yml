@@ -21,3 +21,6 @@ jobs:
       - name: Build and test with Gradle
         run: gradle clean build test
         working-directory: Example
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          TOKEN: ${{ secrets.TOKEN }}
