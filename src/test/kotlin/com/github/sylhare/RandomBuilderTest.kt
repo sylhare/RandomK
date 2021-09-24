@@ -1,24 +1,23 @@
 package com.github.sylhare
 
-import com.github.sylhare.MockClasses.A
-import com.github.sylhare.MockClasses.B
-import com.github.sylhare.MockClasses.C
-import com.github.sylhare.MockClasses.D
-import com.github.sylhare.MockClasses.E
-import com.github.sylhare.MockClasses.F
-import com.github.sylhare.MockClasses.G
-import com.github.sylhare.MockClasses.GA
-import com.github.sylhare.MockClasses.GAA
-import com.github.sylhare.MockClasses.GT
-import com.github.sylhare.MockClasses.GTA
-import com.github.sylhare.MockClasses.I
-import com.github.sylhare.MockClasses.J
-import com.github.sylhare.MockClasses.L
-import com.github.sylhare.MockClasses.M
-import com.github.sylhare.MockClasses.P
-import com.github.sylhare.MockClasses.S
+import com.github.sylhare.mock.MockClasses.A
+import com.github.sylhare.mock.MockClasses.B
+import com.github.sylhare.mock.MockClasses.C
+import com.github.sylhare.mock.MockClasses.D
+import com.github.sylhare.mock.MockClasses.E
+import com.github.sylhare.mock.MockClasses.F
+import com.github.sylhare.mock.MockClasses.G
+import com.github.sylhare.mock.MockClasses.GA
+import com.github.sylhare.mock.MockClasses.GAA
+import com.github.sylhare.mock.MockClasses.GT
+import com.github.sylhare.mock.MockClasses.GTA
+import com.github.sylhare.mock.MockClasses.I
+import com.github.sylhare.mock.MockClasses.J
+import com.github.sylhare.mock.MockClasses.L
+import com.github.sylhare.mock.MockClasses.M
+import com.github.sylhare.mock.MockClasses.P
+import com.github.sylhare.mock.MockClasses.S
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -31,7 +30,6 @@ class RandomBuilderTest {
         val a: A = makeRandomInstance()
         assertEquals(a::class.java, A::class.java)
     }
-
 
     @Test
     fun `Creates a single instance using constructor with 1 variable`() {

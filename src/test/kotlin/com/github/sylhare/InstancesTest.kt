@@ -1,5 +1,6 @@
 package com.github.sylhare
 
+import com.github.sylhare.mock.MockClasses
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import kotlin.reflect.full.createType
