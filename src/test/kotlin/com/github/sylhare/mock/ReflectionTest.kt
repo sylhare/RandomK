@@ -2,13 +2,14 @@ package com.github.sylhare.mock
 
 import com.github.sylhare.mock.MockClasses.A
 import com.github.sylhare.mock.MockClasses.D
+import com.github.sylhare.mock.MockClasses.K
 import getKType
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.createType
-import kotlin.reflect.full.instanceParameter
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.javaType
 import kotlin.reflect.typeOf
 
@@ -63,5 +64,16 @@ class ReflectionTest {
         assertNotEquals(typeOf<D>().toString(), typeOf<D>().javaType.toString())
         assertNotEquals("void", typeOf<Unit>().javaType.toString())
         assertNotEquals("D", typeOf<D>().javaType.toString())
+    }
+
+    @Test
+    fun `Arrays and memberProperties`() {
+        for (memberProperty in K::class.memberProperties) {
+            val propertyType = memberProperty.returnType.javaType as Class<*>
+            if (propertyType.isArray) {
+                val array = java.lang.reflect.Array.newInstance(propertyType.componentType, 10) as Array<*>
+                assertEquals(K(arrayOf(1)).a::class, array::class)
+            }
+        }
     }
 }
