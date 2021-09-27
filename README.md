@@ -2,7 +2,8 @@
 
 Create random instance from a class. It
 uses [`kotlin-reflect`](https://kotlinlang.org/docs/reflection.html#class-references)
-to create by reflection the instance.
+to create by reflection the instance. (Using [KClass](https://kotlinlang.org/docs/reflection.html#class-references)
+and [KType](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-type/))
 
 > _Reflection_ is a set of language and library features that allows for introspecting the structure of your own program at runtime.
 
