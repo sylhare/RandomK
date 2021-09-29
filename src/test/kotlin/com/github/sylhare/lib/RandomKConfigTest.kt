@@ -1,16 +1,15 @@
-package com.github.sylhare
+package com.github.sylhare.lib
 
-import com.github.sylhare.lib.RandomKNotSupportedType
-import com.github.sylhare.lib.makeRandomInstance
+import com.github.sylhare.RandomK
 import com.github.sylhare.mock.MockClasses
+import com.github.sylhare.randomK
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import kotlin.random.Random
 
 @ExperimentalStdlibApi
-internal class RandomKTest {
+internal class RandomKConfigTest {
     @Test
     fun `Creates mock with randomK`() {
         val h: MockClasses.H = randomK()
@@ -88,10 +87,5 @@ internal class RandomKTest {
             "G(f1=F(hello=`tCacMffjYGtd), f2=F(hello=nA[trp_JLM]iD^yBz`AGmwIMmdtGFCTcKrSYMlUYH), c=b, str=cUJxl^\\dBAlOpa^clPXl]oozUVBMFC], l=7449062515800925810, m={X[Em=C(a=A, b=B(a=A))})",
             randomK<MockClasses.G>(random).toString()
         )
-    }
-
-    @Test
-    fun `Not implemented test`() {
-        assertThrows<RandomKNotSupportedType> { randomK<Array<MockClasses.A>>() }
     }
 }

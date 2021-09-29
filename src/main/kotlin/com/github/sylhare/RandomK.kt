@@ -17,10 +17,11 @@ inline fun <reified T : Any> randomK(
     return try {
         T::class.cast(instance)
     } catch (e: Exception) {
-        "Cast from ${instance?.let { it::class }} to ${T::class} is not yet implemented / supported".let {
-            println(it)
-            throw RandomKNotSupportedType(it)
-        }
+        "Cast from ${instance?.let { it::class }} to ${T::class} is not yet implemented / supported"
+            .let {
+                println(it)
+                throw RandomKNotSupportedType(it)
+            }
     }
 }
 

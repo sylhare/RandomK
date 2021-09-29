@@ -26,7 +26,7 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
             Array<String>::class -> arrayOf(buildString())
             Array<Int>::class -> arrayOf(random.nextInt())
             IntArray::class -> intArrayOf(random.nextInt())
-            else -> emptyArray<Any>()
+            else -> arrayOfNulls<Any>(1)
         }
     }
 
