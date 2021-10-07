@@ -182,12 +182,13 @@ class RandomKTest {
         fun `Creates primitives for Arrays`() {
             assertEquals(arrayOf(1)::class, randomK<Array<Int>>()::class)
             assertEquals(arrayOf("string")::class, randomK<Array<String>>()::class)
-        }
-
-        @Test
-        fun `Creates ByteArray and IntArray primitives`() {
-            assertEquals(ByteArray::class, randomK<ByteArray>()::class)
-            assertEquals(intArrayOf(10, 20, 30, 40, 50)::class, randomK<IntArray>()::class)
+            assertTrue(randomK<Array<Short>>() is Array<Short>)
+            assertTrue(randomK<Array<Float>>() is Array<Float>)
+            assertTrue(randomK<Array<Long>>() is Array<Long>)
+            assertTrue(randomK<Array<Double>>() is Array<Double>)
+            assertTrue(randomK<Array<Byte>>() is Array<Byte>)
+            assertTrue(randomK<Array<Char>>() is Array<Char>)
+            assertTrue(randomK<Array<Boolean>>() is Array<Boolean>)
         }
 
         @Test
@@ -198,14 +199,21 @@ class RandomKTest {
             assertEquals(LongArray(0)::class, randomK<LongArray>()::class)
             assertEquals(FloatArray(0)::class, randomK<FloatArray>()::class)
             assertEquals(DoubleArray(0)::class, randomK<DoubleArray>()::class)
+            assertEquals(ByteArray::class, randomK<ByteArray>()::class)
+            assertEquals(intArrayOf(10, 20, 30, 40, 50)::class, randomK<IntArray>()::class)
         }
 
-        // TODO cast Array<Any> / Object[] to Array<T>
         @Test
-        fun `Creates primitives for other Arrays`() {
+        fun `Arrays of Any`() {
+            assertTrue(randomK<Array<Any>>() is Array<Any>)
+        }
+
+        // TODO: cast T to Array<*> does not work
+        // TODO: Array<Array<T>> not implemented
+        @Test
+        fun `Unsupported cast exception`() {
             assertThrows<RandomKNotSupportedType> { randomK<Array<A>>() }
-            //assertEquals(arrayOf(A())::class, randomK<Array<A>>()::class)
-            //assertEquals(arrayOf(arrayOf(A()))::class, Array<Array<A>>::class)
+            assertThrows<RandomKNotSupportedType> { randomK<Array<Array<Any>>>() }
         }
     }
 
