@@ -23,6 +23,13 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
     private fun buildArray(clazz: KClass<*>): Any {
         return when (clazz) {
             ByteArray::class -> buildString().toByteArray()
+            BooleanArray::class -> BooleanArray(0)
+            CharArray::class -> buildString().toCharArray()
+            ShortArray::class -> ShortArray(0)
+            IntArray::class -> IntArray(0)
+            LongArray::class -> LongArray(0)
+            FloatArray::class -> FloatArray(0)
+            DoubleArray::class -> DoubleArray(0)
             Array<String>::class -> arrayOf(buildString())
             Array<Int>::class -> arrayOf(random.nextInt())
             IntArray::class -> intArrayOf(random.nextInt())

@@ -169,10 +169,18 @@ class RandomKTest {
 
     @Test
     fun `Creates primitives for Arrays`() {
-        assertEquals(arrayOf("this", "is", "a", "string", "array")::class, Array<String>::class)
         assertEquals(arrayOf(1)::class, randomK<Array<Int>>()::class)
         assertEquals(arrayOf("string")::class, randomK<Array<String>>()::class)
-        assertEquals(arrayOf(arrayOf(1L))::class, Array<Array<Long>>::class)
+    }
+
+    @Test
+    fun `Creates primitives for more Arrays`() {
+        assertEquals(BooleanArray(0)::class, randomK<BooleanArray>()::class)
+        assertEquals(CharArray(0)::class, randomK<CharArray>()::class)
+        assertEquals(ShortArray(0)::class, randomK<ShortArray>()::class)
+        assertEquals(LongArray(0)::class, randomK<LongArray>()::class)
+        assertEquals(FloatArray(0)::class, randomK<FloatArray>()::class)
+        assertEquals(DoubleArray(0)::class, randomK<DoubleArray>()::class)
     }
 
     // TODO cast Array<Any> / Object[] to Array<T>
