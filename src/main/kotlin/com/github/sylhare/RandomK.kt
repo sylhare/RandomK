@@ -15,7 +15,7 @@ inline fun <reified T : Any> randomK(
 ): T {
     val instance = RandomBuilder(random, config).build(T::class, typeOf<T>())
     return try {
-        T::class.cast(instance)
+        instance as T
     } catch (e: Exception) {
         "Cast from ${instance?.let { it::class }} to ${T::class} is not yet implemented / supported"
             .let {

@@ -107,6 +107,7 @@ class RandomKTest {
         @Test
         fun `Creates number primitives`() {
             assertEquals(Int::class, randomK<Int>()::class)
+            assertEquals(Short::class, randomK<Short>()::class)
             assertEquals(Long::class, randomK<Long>()::class)
             assertEquals(Double::class, randomK<Double>()::class)
             assertEquals(Float::class, randomK<Float>()::class)
@@ -159,6 +160,7 @@ class RandomKTest {
         @Test
         fun `Creates sets`() {
             assertTrue(randomK<Set<F>>() is Set<F>)
+            assertEquals(hashSetOf<A>()::class, randomK<HashSet<A>>()::class)
         }
 
         @Test

@@ -54,6 +54,7 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
         Any::class -> config.any
         Byte::class -> random.nextInt().toByte()
         Int::class -> random.nextInt()
+        Short::class -> random.nextInt().toShort()
         Long::class -> random.nextLong()
         Double::class -> random.nextDouble()
         Float::class -> random.nextFloat()
