@@ -45,8 +45,21 @@ class ReflectionTest {
         val dType: KType = typeOf<D>()
         assertNotEquals(KType::class, dType::class)
         assertEquals(D::class.qualifiedName, dType.toString())
+        println(D::class.qualifiedName)
         assertEquals(D::class.qualifiedName, D::class.createType().toString())
         assertEquals(D::class, typeOf<D>().classifier)
+        println(D::class)
+    }
+
+    @Test
+    fun `KType and KClass with arrays`() {
+        val dType: KType = typeOf<D>()
+        assertNotEquals(KType::class, dType::class)
+        assertEquals(D::class.qualifiedName, dType.toString())
+        println(D::class.qualifiedName)
+        assertEquals(D::class.qualifiedName, D::class.createType().toString())
+        assertEquals(D::class, typeOf<D>().classifier)
+        println(D::class)
     }
 
     @Test
