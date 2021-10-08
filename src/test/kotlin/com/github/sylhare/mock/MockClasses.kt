@@ -46,6 +46,7 @@ object MockClasses {
     class H(val i: Int, val s: String, val l: List<A>)
     class I(val ints: List<Int>)
     class J(val map: Map<Long, String>)
+    class K(val aa: String, val a: Array<Int>)
     class L {
         val a: N by lazy { HELLO }
         var b: N = N("default")
@@ -91,8 +92,16 @@ object MockClasses {
     }
 
     data class N(val value: String)
-    sealed class S
+
+    class O {
+        init {
+            print("Hello")
+        }
+    }
+
     class P {
         private constructor()
     }
+
+    sealed class S
 }
