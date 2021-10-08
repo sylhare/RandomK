@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("com.github.sylhare:randomk:2.2")
+    implementation("com.github.sylhare:randomk:2.3")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api")

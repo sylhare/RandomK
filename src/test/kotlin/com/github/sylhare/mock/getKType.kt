@@ -34,13 +34,15 @@ fun Type.toKTypeProjection(): KTypeProjection = when (this) {
     is Class<*> -> this.kotlin.toInvariantFlexibleProjection()
     is ParameterizedType -> {
         val erasure = (rawType as Class<*>).kotlin
-        erasure.toInvariantFlexibleProjection((erasure.typeParameters.zip(actualTypeArguments).map { (parameter, argument) ->
-            val projection = argument.toKTypeProjection()
-            projection.takeIf {
-                // Get rid of use-site projections on arguments, where the corresponding parameters already have a declaration-site projection
-                parameter.variance == KVariance.INVARIANT || parameter.variance != projection.variance
-            } ?: KTypeProjection.invariant(projection.type!!)
-        }))
+        erasure.toInvariantFlexibleProjection(
+            (erasure.typeParameters.zip(actualTypeArguments).map { (parameter, argument) ->
+                val projection = argument.toKTypeProjection()
+                projection.takeIf {
+                    // Get rid of use-site projections on arguments, where the corresponding parameters already have a declaration-site projection
+                    parameter.variance == KVariance.INVARIANT || parameter.variance != projection.variance
+                } ?: KTypeProjection.invariant(projection.type!!)
+            })
+        )
     }
     is WildcardType -> when {
         lowerBounds.isNotEmpty() -> KTypeProjection.contravariant(lowerBounds.single().toKType())
