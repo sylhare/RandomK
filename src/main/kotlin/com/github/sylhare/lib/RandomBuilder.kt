@@ -4,6 +4,7 @@ import com.github.sylhare.RandomK
 import kotlin.random.Random
 import kotlin.reflect.*
 import kotlin.reflect.full.createType
+import kotlin.reflect.jvm.javaType
 
 
 class RandomBuilder(private val random: Random, private val config: RandomK.Config) {
@@ -16,11 +17,11 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
      */
     fun build(clazz: KClass<*>, type: KType): Any? = when {
         type.isMarkedNullable && random.nextBoolean() -> null
-        clazz.java.isArray -> buildArray(clazz)
+        clazz.java.isArray -> buildArray(clazz, type)
         else -> primitiveOrNull(clazz, type) ?: customOrNull(clazz, type)
     }
 
-    private fun buildArray(clazz: KClass<*>): Any {
+    private fun buildArray(clazz: KClass<*>, type: KType): Any {
         return when (clazz) {
             ByteArray::class -> buildString().toByteArray()
             BooleanArray::class -> BooleanArray(0)
@@ -39,7 +40,7 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
             Array<Char>::class -> arrayOf(buildChar())
             Array<String>::class -> arrayOf(buildString())
             Array<Boolean>::class -> arrayOf(random.nextBoolean())
-            else -> arrayOf<Any>()
+            else -> java.lang.reflect.Array.newInstance(type.arguments[0].type!!.javaType as Class<*>, 10)
         }
     }
 

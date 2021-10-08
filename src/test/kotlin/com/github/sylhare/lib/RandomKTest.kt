@@ -180,8 +180,8 @@ class RandomKTest {
     inner class Arrays {
         @Test
         fun `Creates primitives for Arrays`() {
-            assertEquals(arrayOf(1)::class, randomK<Array<Int>>()::class)
             assertEquals(arrayOf("string")::class, randomK<Array<String>>()::class)
+            assertEquals(arrayOf(1)::class, randomK<Array<Int>>()::class)
             assertTrue(randomK<Array<Short>>() is Array<Short>)
             assertTrue(randomK<Array<Float>>() is Array<Float>)
             assertTrue(randomK<Array<Long>>() is Array<Long>)
@@ -206,14 +206,9 @@ class RandomKTest {
         @Test
         fun `Arrays of Any`() {
             assertTrue(randomK<Array<Any>>() is Array<Any>)
-        }
-
-        // TODO: cast T to Array<*> does not work
-        // TODO: Array<Array<T>> not implemented
-        @Test
-        fun `Unsupported cast exception`() {
-            assertThrows<RandomKNotSupportedType> { randomK<Array<A>>() }
-            assertThrows<RandomKNotSupportedType> { randomK<Array<Array<Any>>>() }
+            assertTrue(randomK<Array<A>>() is Array<A>)
+            assertTrue(randomK<Array<Array<Any>>>() is Array<Array<Any>>)
+            assertTrue(randomK<Array<Array<A>>>() is Array<Array<A>>)
         }
     }
 
