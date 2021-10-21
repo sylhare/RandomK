@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.sylhare"
-version = "2.3"
+version = "2.4"
 
 repositories {
     mavenCentral()
