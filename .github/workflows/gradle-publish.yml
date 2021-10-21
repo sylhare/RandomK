@@ -4,8 +4,6 @@
 name: RandomK Publish
 
 on:
-  release:
-    types: [ created ]
   push:
     tags:
       - '*'
