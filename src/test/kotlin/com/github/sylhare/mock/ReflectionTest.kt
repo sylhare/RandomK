@@ -6,9 +6,8 @@ import com.github.sylhare.mock.MockClasses.D
 import com.github.sylhare.mock.MockClasses.K
 import com.github.sylhare.mock.MockClasses.O
 import getKType
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.createType
@@ -163,6 +162,115 @@ class ReflectionTest {
         private inline fun <reified T> arrayReflectionCast(): T? {
             return java.lang.reflect.Array.newInstance(typeOf<T>().arguments[0].type!!.javaType as Class<*>, 10) as T
         }
+    }
 
+    @Nested
+    @TestMethodOrder(value = MethodOrderer.MethodName::class)
+    inner class Showcase {
+
+        @BeforeEach
+        fun setup() {
+            println()
+        }
+
+        @Test
+        fun `1 String - KType and Type`() {
+            val stringType: KType = typeOf<String>()
+            assertEquals(String::class.qualifiedName, stringType.toString())
+            assertEquals(String::class.qualifiedName, String::class.createType().toString())
+            println("Kotlin Type:\t $stringType")
+            println("Java Type:\t\t ${String::class.java.typeName}")
+            println("Java Type:\t\t ${"String"::class.java.typeName}")
+        }
+
+        @Test
+        fun `2 String - KClass, Class and KClassifier`() {
+            assertEquals(String::class, typeOf<String>().classifier)
+            println("Kotlin Class:\t ${String::class}")
+            println("KClassifier:\t ${typeOf<String>().classifier}")
+            println("Java Class:\t\t ${String::class.java}")
+        }
+
+        /**
+         * Due to generic type erasure List class has a single implementation for all its generic instantiations.
+         * Can't List<String>::class, type is not reified for list:
+         *
+         *      public interface List<out E> : Collection<E>
+         */
+        @Test
+        fun `3 List of String - KType and Type`() {
+            val stringType: KType = typeOf<List<String>>()
+            val stringList: List<String> = mutableListOf("A", "B") // Kotlin list uses ArrayList internally
+            assertNotEquals(List::class.qualifiedName, stringType.toString())
+            assertNotEquals(stringList::class.qualifiedName, stringType.toString()) // The qualified name is not a Kotlin class here
+            println("Kotlin Type:\t $stringType")
+            println("Java Type:\t\t ${stringList::class.java.typeName}") // A generated java class (with the $)
+        }
+
+        @Test
+        fun `4 List of String - KClass, Class and KClassifier`() {
+            val stringList: List<String> = mutableListOf("A", "B")
+            val stringList2: List<String> = emptyList()
+            assertEquals(List::class, typeOf<List<String>>().classifier)
+            println("Kotlin Class:\t ${stringList::class}")
+            println("Kotlin Class:\t ${stringList2::class}")
+            println("KClassifier:\t ${typeOf<List<String>>().classifier}")
+            println("Java Class:\t\t ${stringList::class.java}")
+        }
+
+        /**
+         * EmptyList is an internal object of the Kotlin Collection implementation,
+         * EmptyList type does not exist in java.
+         *
+         * /**
+         * Returns an empty read-only list.  The returned list is serializable (JVM).
+         * @sample samples.collections.Collections.Lists.emptyReadOnlyList
+         * */
+         *  @kotlin.internal.InlineOnly
+         *  public inline fun <T> listOf(): List<T> = emptyList()
+         *
+         * EmptyList in CollectionsKt.class:
+         *      internal object EmptyList : List<Nothing>, Serializable, RandomAccess { .. }
+         */
+        @Test
+        fun `5 EmptyList - Type and Class`() {
+            val emptyList: List<String> = listOf()
+            val emptyListClass: KClass<*> = emptyList::class
+            val emptyListType: KType = emptyListClass.createType()
+            assertNotEquals(emptyList::class.qualifiedName, emptyListType)
+            println("Kotlin Class:\t $emptyListClass")
+            println("Kotlin Type:\t $emptyListType")
+            println("Java Class:\t\t ${emptyListClass::class.java}") // EmptyList class does not exist in java
+            println("Java Type:\t\t ${emptyListClass::class.java.typeName}") // EmptyList type does not exist in java, so it's map to a reflect class KClassImpl
+            assertThrows<NoSuchMethodException> { emptyListClass::class.java.getDeclaredConstructor().newInstance() }
+            assertThrows<IndexOutOfBoundsException> { emptyList[0] }
+        }
+
+        /**
+         * Array keeps their generic type during instantiation:
+         *
+         * /**
+         * Returns an array containing the specified elements.
+         * */
+         * public inline fun <reified @PureReifiable T> arrayOf(vararg elements: T): Array<T>
+         *
+         * Empty Array:
+         *
+         *     public inline fun <reified @PureReifiable T> emptyArray(): Array<T> =
+         *      @Suppress("UNCHECKED_CAST")
+         *      (arrayOfNulls<T>(0) as Array<T>)
+         *
+         */
+        @Test
+        fun `6 Array - Type and Class`() {
+            val array: Array<String> = arrayOf()
+            val emptyArray: Array<String> = emptyArray()
+            assertEquals(array::class, emptyArray::class) // There a no EmptyArray internal type
+            assertNotEquals(array::class.qualifiedName, typeOf<Array<String>>().toString()) // Qualified name gets cut to kotlin.Array
+            println("Kotlin Class:\t ${Array<String>::class}") // Type in array is reified
+            println("Kotlin Type:\t ${typeOf<Array<String>>()}")
+            println("Java Class:\t\t ${Array<String>::class.java}")
+            println("Java Type:\t\t ${Array<String>::class.java.typeName}")
+        }
     }
 }
