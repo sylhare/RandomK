@@ -16,12 +16,14 @@ import com.github.sylhare.mock.MockClasses.J
 import com.github.sylhare.mock.MockClasses.L
 import com.github.sylhare.mock.MockClasses.M
 import com.github.sylhare.mock.MockClasses.P
+import com.github.sylhare.mock.MockClasses.Q
 import com.github.sylhare.mock.MockClasses.S
 import com.github.sylhare.randomK
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.random.Random
 
 @ExperimentalStdlibApi
 @Suppress("USELESS_IS_CHECK")
@@ -84,6 +86,16 @@ class RandomKTest {
             val j: J = randomK()
             assertTrue(j is J)
             assertTrue(j.map.all { (k, v) -> k is Long && v is String })
+        }
+
+        @Test
+        fun `Constructor with nullable fields already null`() {
+            val q: Q = randomK(random = Random(7))
+            assertNull(q.alreadyNull)
+            assertNotNull(q.notYetNull)
+
+            assertNotNull(randomK<String?>(random = Random(1)))
+            assertNull(randomK<String?>(random = Random(2)))
         }
 
         @Test

@@ -13,7 +13,7 @@ internal class ExampleTest {
     fun `Dummy example using randomK in a test`() {
         val presenter = Presenter()
         assertEquals(null, presenter.other)
-        presenter.other = randomK()
+        presenter.other = randomK<OtherExample>()
         assertNotNull(presenter.other)
     }
 

@@ -103,5 +103,6 @@ object MockClasses {
         private constructor()
     }
 
+    class Q (var alreadyNull: String? = null, var notYetNull: String?)
     sealed class S
 }
