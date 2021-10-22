@@ -8,12 +8,11 @@ import com.github.sylhare.mock.MockClasses.O
 import getKType
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import kotlin.reflect.KClass
-import kotlin.reflect.KType
+import java.lang.reflect.Type
+import kotlin.reflect.*
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.javaType
-import kotlin.reflect.typeOf
 
 @ExperimentalStdlibApi
 @Suppress("USELESS_IS_CHECK")
@@ -157,6 +156,15 @@ class ReflectionTest {
             assertEquals(arrayOf(0, 1, 2).asList().toString(), array.asList().toString())
         }
 
+        private inline fun <reified T> reflectArrayOf(): T? {
+            if (T::class.java.isArray) {
+                val arrayType: KType = typeOf<T>().arguments[0].type!!
+                println(arrayType)
+                return arrayOf((arrayType.classifier as KClass<*>).constructors.first().call()) as T
+            }
+            return null
+        }
+
         private inline fun <reified T> reflectArray(): T {
             if (T::class.java.isArray) {
                 val array = arrayOf(
@@ -235,11 +243,9 @@ class ReflectionTest {
 
         @Test
         fun `4 List of String - KClass, Class and KClassifier`() {
-            val stringList: List<String> = mutableListOf("A", "B")
-            val stringList2: List<String> = emptyList()
+            val stringList: List<String> = listOf("A", "B")
             assertEquals(List::class, typeOf<List<String>>().classifier)
             println("Kotlin Class:\t ${stringList::class}")
-            println("Kotlin Class:\t ${stringList2::class}")
             println("KClassifier:\t ${typeOf<List<String>>().classifier}")
             println("Java Class:\t\t ${stringList::class.java}")
         }
@@ -248,15 +254,10 @@ class ReflectionTest {
          * EmptyList is an internal object of the Kotlin Collection implementation,
          * EmptyList type does not exist in java.
          *
-         * /**
-         * Returns an empty read-only list.  The returned list is serializable (JVM).
-         * @sample samples.collections.Collections.Lists.emptyReadOnlyList
-         * */
-         *  @kotlin.internal.InlineOnly
          *  public inline fun <T> listOf(): List<T> = emptyList()
          *
          * EmptyList in CollectionsKt.class:
-         *      internal object EmptyList : List<Nothing>, Serializable, RandomAccess { .. }
+         *   internal object EmptyList : List<Nothing>, Serializable, RandomAccess { .. }
          */
         @Test
         fun `5 EmptyList - Type and Class`() {
@@ -274,17 +275,7 @@ class ReflectionTest {
 
         /**
          * Array keeps their generic type during instantiation:
-         *
-         * /**
-         * Returns an array containing the specified elements.
-         * */
          * public inline fun <reified @PureReifiable T> arrayOf(vararg elements: T): Array<T>
-         *
-         * Empty Array:
-         *
-         *     public inline fun <reified @PureReifiable T> emptyArray(): Array<T> =
-         *      @Suppress("UNCHECKED_CAST")
-         *      (arrayOfNulls<T>(0) as Array<T>)
          *
          */
         @Test
@@ -300,6 +291,27 @@ class ReflectionTest {
             println("Kotlin Type:\t ${typeOf<Array<String>>()}")
             println("Java Class:\t\t ${Array<String>::class.java}")
             println("Java Type:\t\t ${Array<String>::class.java.typeName}")
+        }
+
+        @Test
+        fun `7 KClassifier`() {
+            val k: KClass<*> = String::class
+            val j: Class<*> = String::class.java
+            val kt: KType = String::class.createType()
+            val jt: Type = String::class.createType().javaType
+            val ks: KClassifier? = typeOf<String>().classifier
+
+            println("KClassifier:\t ${typeOf<List<String>>().classifier} for ${listOf("A", "B")::class}")
+            println("KClassifier:\t ${typeOf<Array<String>>().classifier} for ${arrayOf("A", "B")::class}")
+        }
+
+        private fun <T> nullableType(): List<T?> {
+            return listOf()
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        fun <K : Any, V : Any> exampleType(key: K): V? {
+            return "" as V?
         }
     }
 }
