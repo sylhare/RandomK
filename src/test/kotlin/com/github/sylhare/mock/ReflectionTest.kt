@@ -95,7 +95,7 @@ class ReflectionTest {
             println("${Array<Int>::class.typeParameters[0]::class}")
             println("${typeOf<Array<O>>()}")
             println("${O::class.createType()}")
-            org.junit.jupiter.api.assertThrows<IllegalArgumentException> { Array<O>::class.createType() }
+            assertThrows<IllegalArgumentException> { Array<O>::class.createType() }
             println("${typeOf<Array<Int>>().classifier}")
             println("${typeOf<Array<Int>>().classifier} is IntArray and not Array<kotlin.Int>")
             println("${typeOf<Array<Int>>().arguments[0].type!!.javaType as Class<*>}")
@@ -131,16 +131,30 @@ class ReflectionTest {
 
         @Test
         fun testReflectArray() {
-            org.junit.jupiter.api.assertThrows<ClassCastException> { reflectArray<Array<Int>>() }
-            org.junit.jupiter.api.assertThrows<ClassCastException> { reflectArray<Array<String>>() }
+            assertThrows<ClassCastException> { reflectArray<Array<Int>>() }
+            assertThrows<ClassCastException> { reflectArray<Array<String>>() }
             assertTrue(reflectArray<Array<Any>>() is Array<*>)
             assertTrue(reflectArray<Array<Any>>() is Array<Any>)
         }
 
         @Test
         fun testWithArrayReflection() {
-            arrayReflectionCast<Array<String>>()
-            arrayReflectionCast<Array<O>>()
+            assertTrue(genericReflectionToTypedArray<Array<String>>() is Array<String>)
+            assertTrue(genericReflectionToTypedArray<Array<O>>() is Array<O>)
+        }
+
+        @Test
+        fun testWithOtherArrayReflection() {
+            assertTrue(createArrayOfGeneric<String>() is Array<String>)
+            assertTrue(instantiateArrayOfGeneric<String>() is Array<String>)
+            assertThrows<Error> { instantiateArrayOfGeneric<Array<D>>() }
+        }
+
+        @Test
+        fun makeYourOwnArray() {
+            val array: Array<Int> = Array(3) { i: Int -> i }
+            assertThrows<Error> { Array<Int>::class.constructors.first().call(3, { i: Int -> i }) }
+            assertEquals(arrayOf(0, 1, 2).asList().toString(), array.asList().toString())
         }
 
         private inline fun <reified T> reflectArray(): T {
@@ -159,8 +173,17 @@ class ReflectionTest {
             }
         }
 
-        private inline fun <reified T> arrayReflectionCast(): T? {
+        private inline fun <reified T> genericReflectionToTypedArray(): T? {
             return java.lang.reflect.Array.newInstance(typeOf<T>().arguments[0].type!!.javaType as Class<*>, 10) as T
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        private inline fun <reified T> createArrayOfGeneric(): Array<T> {
+            return java.lang.reflect.Array.newInstance(typeOf<T>().javaType as Class<*>, 10) as Array<T>
+        }
+
+        private inline fun <reified T> instantiateArrayOfGeneric(): Array<T> {
+            return Array(10) { T::class.constructors.first().call() }
         }
     }
 
@@ -202,7 +225,10 @@ class ReflectionTest {
             val stringType: KType = typeOf<List<String>>()
             val stringList: List<String> = mutableListOf("A", "B") // Kotlin list uses ArrayList internally
             assertNotEquals(List::class.qualifiedName, stringType.toString())
-            assertNotEquals(stringList::class.qualifiedName, stringType.toString()) // The qualified name is not a Kotlin class here
+            assertNotEquals(
+                stringList::class.qualifiedName,
+                stringType.toString()
+            ) // The qualified name is not a Kotlin class here
             println("Kotlin Type:\t $stringType")
             println("Java Type:\t\t ${stringList::class.java.typeName}") // A generated java class (with the $)
         }
@@ -266,7 +292,10 @@ class ReflectionTest {
             val array: Array<String> = arrayOf()
             val emptyArray: Array<String> = emptyArray()
             assertEquals(array::class, emptyArray::class) // There a no EmptyArray internal type
-            assertNotEquals(array::class.qualifiedName, typeOf<Array<String>>().toString()) // Qualified name gets cut to kotlin.Array
+            assertNotEquals(
+                array::class.qualifiedName,
+                typeOf<Array<String>>().toString()
+            ) // Qualified name gets cut to kotlin.Array
             println("Kotlin Class:\t ${Array<String>::class}") // Type in array is reified
             println("Kotlin Type:\t ${typeOf<Array<String>>()}")
             println("Java Class:\t\t ${Array<String>::class.java}")
