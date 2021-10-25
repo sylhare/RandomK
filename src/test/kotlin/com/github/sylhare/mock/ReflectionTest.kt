@@ -5,7 +5,6 @@ import com.github.sylhare.mock.MockClasses.A
 import com.github.sylhare.mock.MockClasses.D
 import com.github.sylhare.mock.MockClasses.K
 import com.github.sylhare.mock.MockClasses.O
-import getKType
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import java.lang.reflect.Type
@@ -45,16 +44,6 @@ class ReflectionTest {
             assertEquals(D::class.qualifiedName, D::class.createType().toString())
             assertEquals(D::class, typeOf<D>().classifier)
             println(D::class)
-        }
-
-        @Test
-        fun `getKType test`() {
-            assertEquals(typeOf<List<Map<String, Array<Double>>>>(), getKType<List<Map<String, Array<Double>>>>())
-            assertEquals(typeOf<Array<Array<String>>>(), getKType<Array<Array<String>>>())
-            assertEquals(typeOf<Unit>(), getKType<Unit>())
-
-            assertNotEquals(typeOf<Array<*>>(), getKType<Array<*>>()) // typeOf transform "*" into "Any"
-            assertNotEquals(typeOf<List<*>>(), getKType<List<*>>())
         }
 
         @Test

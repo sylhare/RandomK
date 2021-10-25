@@ -1,3 +1,5 @@
+package com.github.sylhare.demo
+
 import java.lang.reflect.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
