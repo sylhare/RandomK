@@ -105,4 +105,14 @@ object MockClasses {
 
     class Q (var alreadyNull: String? = null, var notYetNull: String?)
     sealed class S
+
+    data class SimpleClassWithEnum(val status: Status)
+
+    data class SimpleClassWithEnumList(val statuses: List<Status>)
+
+    data class NestedClassWithEnum(val simpleClassWithEnum: SimpleClassWithEnum)
+
+    enum class Status {
+        ENABLED, DISABLED
+    }
 }
