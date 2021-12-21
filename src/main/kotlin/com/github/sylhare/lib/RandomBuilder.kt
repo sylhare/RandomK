@@ -4,6 +4,7 @@ import com.github.sylhare.RandomK
 import kotlin.random.Random
 import kotlin.reflect.*
 import kotlin.reflect.full.createType
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.javaType
 
 
@@ -18,7 +19,13 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
     fun build(clazz: KClass<*>, type: KType): Any? = when {
         type.isMarkedNullable && random.nextBoolean() -> null
         clazz.java.isArray -> buildArray(clazz, type)
+        clazz.isSubclassOf(Enum::class) -> randomEnum(clazz)
         else -> primitiveOrNull(clazz, type) ?: customOrNull(clazz, type)
+    }
+
+    private fun randomEnum(clazz: KClass<*>): Any? {
+        val enumConstants: Array<out Any>? = clazz.javaObjectType.enumConstants
+        return enumConstants?.get(Random.nextInt(0, enumConstants.size))
     }
 
     private fun buildArray(clazz: KClass<*>, type: KType): Any {
@@ -71,6 +78,7 @@ class RandomBuilder(private val random: Random, private val config: RandomK.Conf
         List::class, Collection::class -> buildList(clazz, type)
         Set::class -> buildList(clazz, type).toSet()
         Map::class -> buildMap(clazz, type)
+        Enum::class -> randomEnum(clazz)
         else -> null
     }
 

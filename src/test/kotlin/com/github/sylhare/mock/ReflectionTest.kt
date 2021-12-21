@@ -2,16 +2,20 @@ package com.github.sylhare.mock
 
 import com.github.sylhare.lib.makeRandomInstance
 import com.github.sylhare.mock.MockClasses.A
+import com.github.sylhare.mock.MockClasses.SimpleClassWithEnum
 import com.github.sylhare.mock.MockClasses.D
 import com.github.sylhare.mock.MockClasses.K
+import com.github.sylhare.mock.MockClasses.NestedClassWithEnum
 import com.github.sylhare.mock.MockClasses.O
+import com.github.sylhare.mock.MockClasses.SimpleClassWithEnumList
+import com.github.sylhare.mock.MockClasses.Status
+import com.github.sylhare.randomK
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import java.util.*
 import kotlin.reflect.*
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 import kotlin.reflect.jvm.javaType
 
 @ExperimentalStdlibApi
@@ -52,6 +56,24 @@ class ReflectionTest {
             assertNotEquals(typeOf<D>().toString(), typeOf<D>().javaType.toString())
             assertNotEquals("void", typeOf<Unit>().javaType.toString())
             assertNotEquals("D", typeOf<D>().javaType.toString())
+        }
+
+        @Test
+        fun `type with Enum`() {
+            val simpleClassWithEnum = randomK<SimpleClassWithEnum>()
+            simpleClassWithEnum.status is Status
+        }
+
+        @Test
+        fun `nested type with Enum`() {
+            val nestedClassWithEnum = randomK<NestedClassWithEnum>()
+            nestedClassWithEnum.simpleClassWithEnum.status is Status
+        }
+
+        @Test
+        fun `nested type with Enum list`() {
+            val simpleClassWithEnumList = randomK<SimpleClassWithEnumList>()
+            simpleClassWithEnumList.statuses.forEach { it is Status }
         }
 
     }
